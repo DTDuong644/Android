@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <!-- Nền xanh -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#007BFF" />
+
+        <!-- Icon -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:padding="8dp"
+            android:src="@drawable/logo" />
+    </FrameLayout>
+
+    <!-- Form -->
+
+    <LinearLayout
+        android:id="@+id/form_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="Tìm kiếm chuyến đi của bạn"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnYourLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/custom_edittext_passenger"
+            android:drawablePadding="8dp"
+            android:hint="Vị trí của bạn"
+            android:padding="12dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/btnArrive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/custom_edittext_passenger"
+            android:drawablePadding="8dp"
+            android:padding="12dp"
+            android:hint="Điểm đến"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/btnTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/custom_edittext_passenger"
+            android:drawablePadding="8dp"
+            android:padding="12dp"
+            android:hint="Thời gian"
+            android:textAlignment="textStart"
+            android:textColor="@color/black"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/buttonSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button"
+            android:text="Tìm kiếm"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+</LinearLayout>

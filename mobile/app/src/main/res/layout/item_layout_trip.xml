@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:elevation="6dp"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvTripTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🚌 Chuyến đi"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDriver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tài xế: ..." />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thời gian khởi hành: ..." />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giá: ..." />
+
+        <TextView
+            android:id="@+id/tvVehicle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phương tiện: ..." />
+
+        <Button
+            android:id="@+id/btnDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@null"
+            android:text="Xem chi tiết"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

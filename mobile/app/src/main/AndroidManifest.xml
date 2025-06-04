@@ -16,39 +16,24 @@
         android:theme="@style/Theme.TLU_Rideshare">
 
         <!-- Màn hình chính -->
-        <activity
-            android:name=".driver_edit_trip"
-            android:exported="false" />
-        <activity
-            android:name=".driver_edtit_trip"
-            android:exported="false" />
-        <activity
-            android:name=".driver_home"
-            android:exported="false" />
-        <activity
-            android:name=".driver_customer_list"
-            android:exported="false" />
-        <activity
-            android:name=".SelectOtherLocation"
-            android:exported="false" />
-        <activity
-            android:name=".driver_trip"
-            android:exported="false" />
-        <activity
-            android:name=".driver_detail_trip"
-            android:exported="false" />
-        <activity
-            android:name=".driver_add_trip"
-            android:exported="false"
+        <activity android:name=".driver_edit_trip" android:exported="false" />
+        <activity android:name=".driver_edtit_trip" android:exported="false" />
+        <activity android:name=".driver_home" android:exported="false" />
+        <activity android:name=".driver_customer_list" android:exported="false" />
+        <activity android:name=".SelectOtherLocation" android:exported="false" />
+        <activity android:name=".driver_trip" android:exported="false" />
+        <activity android:name=".driver_detail_trip" android:exported="false" />
+        <activity android:name=".driver_add_trip" android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+
+        <activity android:name=".passenger.HomeActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity" android:exported="false" />
 
         <!-- Các màn hình khác -->
         <activity android:name=".LoginActivity" android:exported="false" />

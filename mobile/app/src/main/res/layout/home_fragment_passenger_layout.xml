@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#007BFF"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="TLU RIDESHARE"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="6dp"
+        android:paddingBottom="5dp">
+
+        <Button
+            android:id="@+id/btn_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_nonactive"
+            android:text="Tôi muốn lái xe"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/btn_rider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/custom_button"
+            android:text="Tôi cần đi xe"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+
+    <!-- Icon -->
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTrips"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="8dp"
+        android:paddingTop="5dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="6dp"
+        tools:listitem="@layout/item_layout_trip" />
+
+    <Button
+        android:id="@+id/btn_searchTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/custom_button"
+        android:text="Tìm kiếm chuyến đi mới"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@null" />
+
+</LinearLayout>
