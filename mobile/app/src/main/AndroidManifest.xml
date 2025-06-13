@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +21,21 @@
         android:theme="@style/Theme.TLU_RideShare"
         tools:targetApi="31">
         <activity
+            android:name=".passenger.SendOTP"
+            android:exported="false" />
+        <activity
+            android:name=".passenger.AccountStatusTrue"
+            android:exported="false" />
+        <activity
+            android:name=".passenger.AccountStatusFalse"
+            android:exported="false" />
+        <activity
+            android:name=".passenger.YourRatingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".passenger.EditProfile"
+            android:exported="false" />
+        <activity
             android:name=".passenger.HomeActivity"
             android:exported="true">
             <intent-filter>
@@ -21,6 +44,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".passenger.HistoryListActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />

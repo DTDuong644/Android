@@ -7,48 +7,88 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private ArrayAdapterTrip adapter;
+    private List<Trip> tripList;
+    private TripViewModel tripViewModel;
+    private SimpleDateFormat dateTimeFormat;
+    private SimpleDateFormat dateFormat;
+    private String currentDate;
+    private Date currentDateTime;
 
     public HomeFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate layout chứa nội dung trang chủ
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_passenger_layout, container, false);
-        // Setup RecyclerView
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewTrips);
+
+        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
+
+        recyclerView = view.findViewById(R.id.recyclerViewTrips);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Sample data
-        List<Trip> tripList = new ArrayList<>();
-        tripList.add(new Trip("Nguyễn Văn A", "08:00", 300000, "Xe máy"));
-        tripList.add(new Trip("Trần Văn B", "09:30", 250000, "Ô tô"));
-        tripList.add(new Trip("Lê Thị C", "10:45", 280000, "Xe máy"));
+        tripList = new ArrayList<>();
+        dateTimeFormat = new SimpleDateFormat("hh:mm, dd/MM/yyyy", Locale.getDefault());
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        currentDateTime = new Date();
+        currentDate = dateFormat.format(currentDateTime);
 
-        // Set adapter
-        ArrayAdapterTrip adapter = new ArrayAdapterTrip(tripList);
+        adapter = new ArrayAdapterTrip(tripList, requireActivity());
         recyclerView.setAdapter(adapter);
 
-        Button btn_searchTrip = view.findViewById(R.id.btn_searchTrip);
-        btn_searchTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getActivity() instanceof HomeActivity) {
-                    ((HomeActivity) getActivity()).switchToTab(1);
+        tripViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
+            if (trips != null) {
+                List<Trip> filteredTrips = new ArrayList<>();
+                for (Trip trip : trips) {
+                    if (isTripOnCurrentDateAndAfterCurrentTime(trip) && !trip.isUserCreated()) {
+                        filteredTrips.add(trip);
+                    }
                 }
+                tripList.clear();
+                tripList.addAll(filteredTrips);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        Button btn_searchTrip = view.findViewById(R.id.btn_searchTrip);
+        btn_searchTrip.setOnClickListener(view1 -> {
+            if (getActivity() instanceof HomeActivity) {
+                ((HomeActivity) getActivity()).switchToTab(1);
             }
         });
 
         return view;
+    }
+
+    private boolean isTripOnCurrentDateAndAfterCurrentTime(Trip trip) {
+        try {
+            currentDateTime = new Date();
+            currentDate = dateFormat.format(currentDateTime);
+            Date tripDateTime = dateTimeFormat.parse(trip.getTime());
+            String tripDate = dateFormat.format(tripDateTime);
+            if (!tripDate.equals(currentDate)) {
+                return false;
+            }
+            return tripDateTime.after(currentDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

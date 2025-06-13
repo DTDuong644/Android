@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="btnContact" type="id" />
+    <item name="dialogDriverImage" type="id" />
+    <item name="dialogDriverName" type="id" />
+    <item name="dialogPhoneNumber" type="id" />
+    <item name="dialogLicensePlate" type="id" />
+    <item name="btnConfirmBooking" type="id" />
+    <item name="btnSearchNewTrip" type="id" />
+    <item name="btnRate" type="id" />
+    <item name="btnCancel" type="id" />
+    <item name="btnSubmit" type="id" />
+    <item name="etRating" type="id" />
+    <item name="tvRatingGuide" type="id" />
+    <item name="tvTitle" type="id" />
+</resources>

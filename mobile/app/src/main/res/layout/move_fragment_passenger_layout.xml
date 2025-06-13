@@ -51,20 +51,18 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:background="@drawable/custom_edittext_passenger"
-            android:drawablePadding="8dp"
-            android:hint="Vị trí của bạn"
             android:padding="12dp"
+            android:hint="Vị trí của bạn"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             app:backgroundTint="@null" />
 
         <Button
-            android:id="@+id/btnArrive"
+            android:id="@+id/btnDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:background="@drawable/custom_edittext_passenger"
-            android:drawablePadding="8dp"
             android:padding="12dp"
             android:hint="Điểm đến"
             android:textAlignment="textStart"
@@ -82,7 +80,8 @@
             android:hint="Thời gian"
             android:textAlignment="textStart"
             android:textColor="@color/black"
-            app:backgroundTint="@null" />
+            app:backgroundTint="@null"
+            android:onClick="btnShowSetDate_click"/>
 
         <Button
             android:id="@+id/buttonSearch"
