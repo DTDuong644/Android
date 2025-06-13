@@ -34,12 +34,12 @@ android {
 }
 
 dependencies {
-    // Các thư viện Android cơ bản từ driver-feature (dùng alias nếu đang dùng version catalog)
+    implementation(libs.cardview)
+    implementation(libs.recyclerview)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.recyclerview)
 
     // Testing
     testImplementation(libs.junit)
@@ -51,3 +51,4 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 }
+

@@ -34,7 +34,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imgAvatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
@@ -42,7 +42,9 @@
             android:background="@drawable/customs_avt"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/avatar"  />
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/avatar" />
 
     </FrameLayout>
 
@@ -70,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/custom_button"
         android:text="Chỉnh sửa hồ sơ"
         app:backgroundTint="@null" />
@@ -81,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/custom_edittext_passenger"
         android:text="Lịch sử chuyến đi"
         android:textAlignment="viewStart"
@@ -94,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/custom_edittext_passenger"
         android:text="Đánh giá của bạn"
         android:textAlignment="viewStart"
@@ -105,14 +107,14 @@
         android:id="@+id/btnActivityAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trạng thái tài khoản"
-        android:background="@drawable/custom_edittext_passenger"
-        android:textAlignment="viewStart"
-        android:textColor="#000000"
-        app:backgroundTint="@null"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/custom_edittext_passenger"
+        android:text="Trạng thái tài khoản"
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        app:backgroundTint="@null" />
 
     <Button
         android:id="@+id/btnLogOut"

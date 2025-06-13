@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Close Button -->
+    <ImageView
+        android:id="@+id/btnCloseDialog"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end|top"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Đóng dialog"
+        android:padding="4dp"
+        android:src="@drawable/icon_x" />
+
+    <!-- Driver Image -->
+    <ImageView
+        android:id="@+id/dialogDriverImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar" />
+
+    <!-- Driver Name -->
+    <TextView
+        android:id="@+id/dialogDriverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:text="Tài xế: Nguyễn Văn A"
+        android:textColor="#212121"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Phone Number -->
+    <TextView
+        android:id="@+id/dialogPhoneNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:text="Số điện thoại: 0123456789"
+        android:textColor="#757575"
+        android:textSize="16sp" />
+
+    <!-- License Plate -->
+    <TextView
+        android:id="@+id/dialogLicensePlate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:text="Biển số xe: 30A1-12345"
+        android:textColor="#757575"
+        android:textSize="16sp" />
+
+    <!-- Passenger Input -->
+    <LinearLayout
+        android:id="@+id/passengerInputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số người đi: "
+            android:textColor="#212121"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/editTextPassengers"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="1"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:background="@drawable/custom_edittext_passenger" />
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnContact"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/custom_button"
+            android:padding="8dp"
+            android:text="Liên hệ"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/btnConfirmBooking"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/custom_button"
+            android:padding="8dp"
+            android:text="Đặt xe"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:backgroundTint="@null" />
+    </LinearLayout>
+</LinearLayout>

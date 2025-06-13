@@ -3,7 +3,6 @@ package com.example.tlu_rideshare.passenger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +34,7 @@ public class ArrayAdapterListTrip extends RecyclerView.Adapter<ArrayAdapterListT
         }
     }
 
+    @NonNull
     @Override
     public ListTripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_list_layout, parent, false);
@@ -44,13 +44,14 @@ public class ArrayAdapterListTrip extends RecyclerView.Adapter<ArrayAdapterListT
     @Override
     public void onBindViewHolder(ListTripViewHolder holder, int position) {
         Trip trip = tripList.get(position);
-        holder.txtSchedule.setText("Tuyến xe: " + trip.schedule);
-        holder.txtNameDriver.setText("Tài xế: " + trip.driverName);
-        holder.txtPhoneNumber.setText("Số điện thoại: " + trip.phoneNumber);
-        holder.txtLicensePlate.setText("Biển số xe: " + trip.licensePlate);
-        holder.txtTime.setText("Thời gian khởi hành: " + trip.time);
-        holder.txtNumOfChair.setText("Số ghế: " + trip.numOfChair);
-        holder.txtPrice.setText("Giá vé: " + trip.price + " VNĐ");
+        holder.txtSchedule.setText("Tuyến xe: " + trip.getYourLocation() + " -> " + trip.getDestination());
+        holder.txtNameDriver.setText("Tài xế: " + trip.getDriverName());
+        holder.txtPhoneNumber.setText("Số điện thoại: " + trip.getPhoneNumber());
+        holder.txtLicensePlate.setText("Biển số xe: " + trip.getLicensePlate());
+        // Hiển thị thời gian (time đã là chuỗi chứa cả ngày và giờ)
+        holder.txtTime.setText("Thời gian khởi hành: " + trip.getTime());
+        holder.txtNumOfChair.setText("Số ghế: " + trip.getEmptyChair());
+        holder.txtPrice.setText("Giá vé: " + trip.getPrice() + " VNĐ");
     }
 
     @Override

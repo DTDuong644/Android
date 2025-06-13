@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,8 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tlu_rideshare.R;
 
@@ -26,9 +24,8 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
     ImageView[] icons = new ImageView[4];
     TextView[] texts = new TextView[4];
-    Button btn_driver, btn_rider, btnDetails, btn_searchTrip;
-    LinearLayout tab1,tab2, tab3, tab4;
-
+    LinearLayout tab1, tab2, tab3, tab4;
+    private boolean isSampleDataAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +37,29 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        TripViewModel tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
+
+        if (!isSampleDataAdded) {
+            List<Trip> sampleTrips = new ArrayList<>();
+            try {
+                sampleTrips.add(new Trip("Nguyễn Văn A", "51H-123.45", 2, "0909123456", 300000,
+                        "Trường Đại học Thủy lợi - Hà Nội", "Bến xe Mỹ Đình - Hà Nội", "18:00, 10/06/2025", "Xe máy", false));
+                sampleTrips.add(new Trip("Nguyễn Văn B", "51B-456.78", 10, "0912345678", 300000,
+                        "Đại học Thủy Lợi", "Bến xe Mỹ Đình", "18:00, 10/06/2025", "Ô tô", false));
+                sampleTrips.add(new Trip("Nguyễn Văn A", "51H-123.45", 2, "0909123456", 150000,
+                        "Bến xe Mỹ Đình - Hà Nội", "Bến xe Giáp Bát - Hà Nội", "08:00, 07/06/2025", "Ô tô", false));
+                sampleTrips.add(new Trip("Trần Văn B", "51B-456.78", 3, "0912345678", 200000,
+                        "TP. Hồ Chí Minh", "Nha Trang", "10:30, 06/06/2025", "Ô tô", false));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            for (Trip sampleTrip : sampleTrips) {
+                tripViewModel.addTrip(sampleTrip);
+            }
+            isSampleDataAdded = true;
+        }
 
         tab1 = findViewById(R.id.tab1);
         tab2 = findViewById(R.id.tab2);
@@ -59,37 +79,26 @@ public class HomeActivity extends AppCompatActivity {
         loadFragment(new HomeFragment());
         updateTabUI(0);
 
-        tab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchToTab(0);
-                updateTabUI(0);
-            }
-        });
+        tab1.setOnClickListener(v -> switchToTab(0));
+        tab2.setOnClickListener(v -> switchToTab(1));
+        tab3.setOnClickListener(v -> switchToTab(2));
+        tab4.setOnClickListener(v -> switchToTab(3));
 
-        tab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchToTab(1);
-                updateTabUI(1);
-            }
-        });
+        // Xử lý Intent để chọn tab
+        handleIntent(getIntent());
+    }
 
-        tab3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchToTab(2);
-                updateTabUI(2);
-            }
-        });
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
 
-        tab4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switchToTab(3);
-                updateTabUI(3);
-            }
-        });
+    private void handleIntent(Intent intent) {
+        if (intent.hasExtra("selected_tab")) {
+            int tabIndex = intent.getIntExtra("selected_tab", 0);
+            switchToTab(tabIndex);
+        }
     }
 
     private void loadFragment(Fragment fragment) {
@@ -100,8 +109,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateTabUI(int selectedTab) {
-        String colorSelected = "#007BFF";  // màu xanh dương
-        String colorDefault = "#000000";   // màu đen
+        String colorSelected = "#007BFF";
+        String colorDefault = "#000000";
 
         for (int i = 0; i < icons.length; i++) {
             if (i == selectedTab) {
@@ -123,10 +132,10 @@ public class HomeActivity extends AppCompatActivity {
                 loadFragment(new MoveFragment());
                 break;
             case 2:
-                 loadFragment(new ListFragment());
-                 break;
+                loadFragment(new ListFragment());
+                break;
             case 3:
-                 loadFragment(new AccountFragment());
+                loadFragment(new AccountFragment());
                 break;
             default:
                 loadFragment(new HomeFragment());

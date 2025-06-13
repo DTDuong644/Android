@@ -1,94 +1,73 @@
 package com.example.tlu_rideshare.passenger;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ListFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment list_fragment_passenger.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListFragment newInstance(String param1, String param2) {
-        ListFragment fragment = new ListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private Button btnSearch;
+    private Button btnHistory;
+    private RecyclerView recyclerView;
+    private ArrayAdapterListTrip adapter;
+    private List<Trip> tripList;
+    private TripViewModel tripViewModel;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment_passenger_layout, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycleViewList);
+        // Khởi tạo ViewModel
+        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
+
+        recyclerView = view.findViewById(R.id.recycleViewList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //this.driverName = driverName;
-        //        this.licensePlate = licensePlate;
-        //        this.numOfChair = numOfChair;
-        //        this.phoneNumber = phoneNumber;
-        //        this.price = price;
-        //        this.schedule = schedule;
-        //        this.time = time;
-        //        this.vehicle = vehicle;
-
-        // Sample data
-        List<Trip> tripList = new ArrayList<>();
-        tripList.add(new Trip("Nguyễn Văn A", "30A12345", 3, "123456789", 500000, "abc -> abc", "08:00", "xm"));
-        tripList.add(new Trip("Nguyễn Văn A", "30A12345", 3, "123456789", 500000, "abc -> abc", "08:00", "xm"));
-        tripList.add(new Trip("Nguyễn Văn A", "30A12345", 3, "123456789", 500000, "abc -> abc", "08:00", "xm"));
+        // Khởi tạo danh sách chuyến đi
+        tripList = new ArrayList<>();
 
         // Set adapter
-        ArrayAdapterListTrip adapter = new ArrayAdapterListTrip(tripList);
+        adapter = new ArrayAdapterListTrip(tripList);
         recyclerView.setAdapter(adapter);
+
+        // Quan sát thay đổi từ ViewModel, chỉ hiển thị chuyến đi do người dùng tạo
+        tripViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
+            if (trips != null) {
+                tripList.clear();
+                for (Trip trip : trips) {
+                    if (trip.isUserCreated()) { // Chỉ thêm các chuyến đi do người dùng tạo
+                        tripList.add(trip);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        btnSearch = view.findViewById(R.id.btnSearch);
+        btnSearch.setOnClickListener(v -> {
+            if (getActivity() instanceof HomeActivity) {
+                ((HomeActivity) getActivity()).switchToTab(1);
+            }
+        });
+
+        btnHistory = view.findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), HistoryListActivity.class);
+            startActivity(intent);
+        });
 
         return view;
     }

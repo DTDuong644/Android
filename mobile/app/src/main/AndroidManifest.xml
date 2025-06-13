@@ -2,8 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Cấp quyền truy cập internet cho ứng dụng -->
+    <!-- Quyền truy cập -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -13,19 +20,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TLU_Rideshare">
+        android:theme="@style/Theme.TLU_RideShare"
+        tools:targetApi="31">
 
         <!-- Màn hình chính -->
-        <activity android:name=".driver_edit_trip" android:exported="false" />
-        <activity android:name=".driver_edtit_trip" android:exported="false" />
-        <activity android:name=".driver_home" android:exported="false" />
-        <activity android:name=".driver_customer_list" android:exported="false" />
-        <activity android:name=".SelectOtherLocation" android:exported="false" />
-        <activity android:name=".driver_trip" android:exported="false" />
-        <activity android:name=".driver_detail_trip" android:exported="false" />
-        <activity android:name=".driver_add_trip" android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
         <activity android:name=".passenger.HomeActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,9 +31,26 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" android:exported="false" />
+        <!-- Driver -->
+        <activity android:name=".driver_add_trip" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".driver_detail_trip" android:exported="false" />
+        <activity android:name=".driver_trip" android:exported="false" />
+        <activity android:name=".SelectOtherLocation" android:exported="false" />
+        <activity android:name=".driver_customer_list" android:exported="false" />
+        <activity android:name=".driver_home" android:exported="false" />
+        <activity android:name=".driver_edtit_trip" android:exported="false" />
+        <activity android:name=".driver_edit_trip" android:exported="false" />
 
-        <!-- Các màn hình khác -->
+        <!-- Passenger -->
+        <activity android:name=".passenger.EditProfile" android:exported="false" />
+        <activity android:name=".passenger.YourRatingActivity" android:exported="false" />
+        <activity android:name=".passenger.AccountStatusFalse" android:exported="false" />
+        <activity android:name=".passenger.AccountStatusTrue" android:exported="false" />
+        <activity android:name=".passenger.SendOTP" android:exported="false" />
+        <activity android:name=".passenger.HistoryListActivity" android:exported="false" />
+
+        <!-- Chung -->
+        <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".RegisterActivity" android:exported="false" />
         <activity android:name=".EditProfileActivity" android:exported="false" />
@@ -47,9 +62,5 @@
         <activity android:name=".ResetPasswordActivity" android:exported="false" />
         <activity android:name=".VerifyActivity" android:exported="false" />
         <activity android:name=".YourReviewsActivity" android:exported="false" />
-
-        <!-- Nếu YourReviewItem không phải Activity thì giữ dòng này bị lỗi -->
-        <!-- <activity android:name=".YourReviewItem" android:exported="false" /> -->
-
     </application>
 </manifest>
