@@ -31,7 +31,7 @@ public class HistoryListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = this;
-        setContentView(R.layout.layout_history_list);
+        setContentView(R.layout.history_list_layout);
 
         recyclerViewHistory = findViewById(R.id.recyclerViewHistory);
         btnSearchNewTrip = findViewById(R.id.btnSearchNewTrip);

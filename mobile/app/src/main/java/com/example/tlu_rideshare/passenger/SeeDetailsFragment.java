@@ -35,7 +35,7 @@ public class SeeDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_see_details, container, false);
+        View view = inflater.inflate(R.layout.see_details_layout, container, false);
 
         // Initialize ViewModel
         tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);

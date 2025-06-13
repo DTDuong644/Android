@@ -38,7 +38,7 @@ public class SuitableTripFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_suitable_trip, container, false);
+        View view = inflater.inflate(R.layout.suitable_trip_layout, container, false);
 
         tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
