@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutChiTietChuyenDi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F8F9FD"
+    tools:context=".driver_detail_trip">
+
+    <!-- Thanh tiêu đề -->
+
+    <!-- Nội dung chính -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#007AFF"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvTieuDe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Chi tiết chuyến xe"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="336dp"
+            android:src="@drawable/back"
+            android:background="@android:color/transparent"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Tiêu đề phụ -->
+            <TextView
+                android:id="@+id/tvTenChuyen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chuyến đi 1"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingBottom="4dp" />
+
+            <!-- Các dòng thông tin -->
+            <TextView style="@style/ItemLabel" android:text="Thời gian: 15:00 ngày 16/05/2025" />
+            <TextView style="@style/ItemLabel" android:text="Điểm đón: Hà Nội" />
+            <TextView style="@style/ItemLabel" android:text="Điểm trả: Hưng Yên" />
+            <TextView style="@style/ItemLabel" android:text="Số khách: 4" />
+            <TextView style="@style/ItemLabel" android:text="Số ghế trống: 0" />
+            <TextView style="@style/ItemLabel" android:text="Loại xe: Ô tô" />
+            <TextView style="@style/ItemLabel" android:text="Biển số: 80A-99999" />
+            <TextView style="@style/ItemLabel" android:text="Giá vé: 200.000" />
+
+            <!-- Các nút bấm -->
+            <Button
+                android:id="@+id/btnKhachHang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Các khách hàng"
+                android:textAllCaps="false"
+                android:backgroundTint="#007AFF"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/btnSuaThongTin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sửa thông tin chuyến đi"
+                android:textAllCaps="false"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnHuyChuyen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hủy chuyến đi"
+                android:textAllCaps="false"
+                android:backgroundTint="#E0E0E0"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnHoanThanh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đã hoàn thành chuyến đi"
+                android:textAllCaps="false"
+                android:backgroundTint="#007AFF"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Thanh menu dưới -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:weightSum="4"
+        android:elevation="4dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_home"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_trip"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_list"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_account"
+            android:scaleType="centerInside" />
+    </LinearLayout>
+</LinearLayout>
