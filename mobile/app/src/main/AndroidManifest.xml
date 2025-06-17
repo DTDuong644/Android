@@ -20,6 +20,7 @@
             android:exported="false" />
         <activity
             android:name=".driver_add_trip"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

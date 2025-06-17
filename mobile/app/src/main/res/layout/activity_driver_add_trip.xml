@@ -179,7 +179,10 @@
                 android:background="@drawable/edittext_background"
                 android:drawableStart="@drawable/ic_car"
                 android:padding="12dp"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:focusable="false"
+                android:inputType="none"
+                android:cursorVisible="false" />
 
             <Space
                 android:layout_width="8dp"
@@ -215,7 +218,8 @@
             android:background="@drawable/edittext_background"
             android:drawableStart="@drawable/ic_seat"
             android:padding="12dp"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:inputType="number"/>
 
         <!-- Giá tiền -->
         <TextView
@@ -235,7 +239,8 @@
             android:background="@drawable/edittext_background"
             android:drawableStart="@drawable/ic_money"
             android:padding="12dp"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:inputType="number"/>
 
         <!-- Nút lưu -->
         <Button
