@@ -13,6 +13,9 @@
         android:theme="@style/Theme.TLU_RideShare"
         tools:targetApi="31">
         <activity
+            android:name=".SelectOtherLocation"
+            android:exported="false" />
+        <activity
             android:name=".driver_trip"
             android:exported="false" />
         <activity
@@ -20,8 +23,8 @@
             android:exported="false" />
         <activity
             android:name=".driver_add_trip"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -1,15 +1,19 @@
 package com.example.tlu_rideshare;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -32,6 +36,11 @@ public class driver_add_trip extends AppCompatActivity {
     EditText edtSeats;
     EditText edtPrice;
     Button btnSave;
+    EditText edtPickup;
+
+    EditText edtDestination;
+    EditText lastClickedEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +57,10 @@ public class driver_add_trip extends AppCompatActivity {
         edtSeats = findViewById(R.id.edt_seats);
         edtPrice = findViewById(R.id.edt_price);
         btnSave = findViewById(R.id.btn_save);
+        edtPickup = findViewById(R.id.edt_pickup);
+        edtDestination = findViewById(R.id.edt_destination);
+
+
         edt_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +83,19 @@ public class driver_add_trip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onSaveButtonClicked();
+            }
+        });
+        edtPickup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLocationDialog(edtPickup);
+            }
+        });
+
+        edtDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLocationDialog(edtDestination);
             }
         });
 
@@ -170,6 +196,48 @@ public class driver_add_trip extends AppCompatActivity {
             return false;
         }
     }
+    private void showLocationDialog(EditText targetEditText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_select_location, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+
+        TextView btnOther = view.findViewById(R.id.btn_other_locations);
+        TextView btnTlu = view.findViewById(R.id.btn_tlu);
+
+        btnOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                // Mở màn hình chọn tỉnh khác và truyền targetEditText để xử lý kết quả
+                Intent intent = new Intent(driver_add_trip.this, SelectOtherLocation.class);
+                startActivityForResult(intent, 1001); // Code kết quả riêng để phân biệt
+                lastClickedEditText = targetEditText; // Gán để xử lý khi onActivityResult
+            }
+        });
+
+        btnTlu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                targetEditText.setText("TLU");
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null) {
+            String selectedLocation = data.getStringExtra("selected_location");
+            if (lastClickedEditText != null) {
+                lastClickedEditText.setText(selectedLocation);
+            }
+        }
+    }
+
 
 
 }
