@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
     <application
@@ -26,11 +26,14 @@
         <activity android:name=".ForgotPasswordActivity" android:exported="true" />
         <activity android:name=".OtpActivity" android:exported="true" />
         <activity android:name=".VerifyActivity" android:exported="true" />
+        <activity android:name=".AccountStatusDoneActivity" />
+
         <activity
             android:name=".ResetPasswordActivity" android:exported="true"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".PersonalInfoActivity" android:exported="true" />
-        <activity android:name=".CaptureIDCardActivity" android:exported="true" />
+        <activity android:name=".SendOTPActivity" android:exported="true"/>
+
         <activity android:name=".ProfileActivity" android:exported="true" />
         <activity android:name=".AccountStatusActivity" android:exported="true" />
         <activity android:name=".EditProfileActivity" android:exported="true" />
