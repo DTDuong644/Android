@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Trip;
 
 public class SeeDetailsFragment extends Fragment {
 

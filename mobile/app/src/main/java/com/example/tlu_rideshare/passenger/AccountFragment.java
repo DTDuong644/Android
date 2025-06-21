@@ -29,23 +29,21 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Customer;
+import com.example.tlu_rideshare.model.Trip;
 
 public class AccountFragment extends Fragment {
 
-    // Các trường hiện có (không thay đổi)
     private static final int PERMISSION_REQUEST_CODE = 102;
-    private static final int EDIT_PROFILE_REQUEST = 101;
     private ImageView imgAvatar;
     private TextView txtFullName, txtDescri;
+    private Button btnHistoryList, btnRate, btnRepairResume, btnActivityAccount;
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> editProfileLauncher;
-    private Button btnHistoryList, btnRate, btnRepairResume;
     private Customer customer;
     private String lastRequestedPermission;
-    // Trường mới cho nút trạng thái tài khoản
-    private Button btnActivityAccount;
 
     public AccountFragment() {
         // Constructor rỗng
@@ -67,23 +65,25 @@ public class AccountFragment extends Fragment {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("avatar", avatar);
             editor.apply();
-            Log.w("AccountFragment", "Đã chuyển đổi avatar kiểu Integer cũ sang String: " + avatar);
         }
 
-        // Lấy trạng thái xác minh từ SharedPreferences
+        // ✅ Đọc customerId từ SharedPreferences
+        String customerId = prefs.getString("customerId", "unknown_id");
+
         boolean isVerified = prefs.getBoolean("isAccountVerified", false);
 
         customer = new Customer(
+                customerId,
                 avatar,
                 prefs.getString("descrip", "Chưa có mô tả"),
                 prefs.getString("email", "email@example.com"),
                 prefs.getString("fullName", "Tên người dùng"),
                 prefs.getString("hometown", "Chưa có quê quán"),
                 prefs.getString("phoneNumber", "0123456789"),
-                isVerified // Truyền trạng thái xác minh
+                isVerified
         );
 
-        // Khởi tạo ActivityResultLauncher (không thay đổi)
+        // Các launcher như cũ
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
@@ -168,27 +168,22 @@ public class AccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.account_fragment_passenger_layout, container, false);
 
-        // Khởi tạo các thành phần giao diện
         imgAvatar = view.findViewById(R.id.imgAvatar);
         txtFullName = view.findViewById(R.id.txtFullName);
         txtDescri = view.findViewById(R.id.txtDescri);
         btnRepairResume = view.findViewById(R.id.btnRepairResume);
         btnHistoryList = view.findViewById(R.id.btnHistoryList);
         btnRate = view.findViewById(R.id.btnYourRate);
-        // Khởi tạo nút mới
         btnActivityAccount = view.findViewById(R.id.btnActivityAccount);
 
-        // Hiển thị thông tin khách hàng
         txtFullName.setText(customer.getFullName());
         txtDescri.setText(customer.getDescrip());
         if (customer.getAvatar() != null && !customer.getAvatar().isEmpty()) {
             imgAvatar.setImageURI(Uri.parse(customer.getAvatar()));
         }
 
-        // Xử lý sự kiện nhấn ảnh đại diện
         imgAvatar.setOnClickListener(v -> showImagePickerDialog());
 
-        // Xử lý sự kiện nhấn nút sửa hồ sơ
         btnRepairResume.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EditProfile.class);
             intent.putExtra("currentFullName", customer.getFullName());
@@ -200,13 +195,11 @@ public class AccountFragment extends Fragment {
             editProfileLauncher.launch(intent);
         });
 
-        // Xử lý sự kiện nhấn nút lịch sử
         btnHistoryList.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), HistoryListActivity.class);
             startActivity(intent);
         });
 
-        // Xử lý sự kiện nhấn nút đánh giá
         btnRate.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), YourRatingActivity.class);
             if (HistoryListActivity.getInstance() != null && !HistoryListActivity.getInstance().getTripHistoryList().isEmpty()) {
@@ -218,16 +211,12 @@ public class AccountFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Xử lý sự kiện nhấn nút kiểm tra trạng thái tài khoản
         btnActivityAccount.setOnClickListener(v -> {
             SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-            boolean isVerified = prefs.getBoolean("isAccountVerified", false); // Giả định trạng thái xác minh được lưu trong SharedPreferences
-            Intent intent;
-            if (isVerified) {
-                intent = new Intent(getActivity(), AccountStatusTrue.class);
-            } else {
-                intent = new Intent(getActivity(), AccountStatusFalse.class);
-            }
+            boolean isVerified = prefs.getBoolean("isAccountVerified", false);
+            Intent intent = isVerified
+                    ? new Intent(getActivity(), AccountStatusTrue.class)
+                    : new Intent(getActivity(), AccountStatusFalse.class);
             startActivity(intent);
         });
 
@@ -236,23 +225,19 @@ public class AccountFragment extends Fragment {
 
     private void showImagePickerDialog() {
         String[] options = {"Chọn từ thư viện", "Chụp ảnh"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Chọn ảnh đại diện");
-        builder.setItems(options, (dialog, which) -> {
-            if (which == 0) {
-                checkStoragePermission();
-            } else {
-                checkCameraPermission();
-            }
-        });
-        builder.show();
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Chọn ảnh đại diện")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) checkStoragePermission();
+                    else checkCameraPermission();
+                })
+                .show();
     }
 
     private void checkStoragePermission() {
         lastRequestedPermission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (ContextCompat.checkSelfPermission(requireContext(), lastRequestedPermission) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(lastRequestedPermission);
         } else {
             openGallery();
         }
@@ -260,9 +245,8 @@ public class AccountFragment extends Fragment {
 
     private void checkCameraPermission() {
         lastRequestedPermission = Manifest.permission.CAMERA;
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        if (ContextCompat.checkSelfPermission(requireContext(), lastRequestedPermission) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(lastRequestedPermission);
         } else {
             openCamera();
         }
@@ -290,6 +274,7 @@ public class AccountFragment extends Fragment {
     private void saveCustomerData(Customer customer) {
         SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("customerId", customer.getCustomerId()); // ✅ Lưu customerId
         editor.putString("avatar", customer.getAvatar());
         editor.putString("descrip", customer.getDescrip());
         editor.putString("email", customer.getEmail());

@@ -1,4 +1,4 @@
-package com.example.tlu_rideshare.passenger;
+package com.example.tlu_rideshare.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

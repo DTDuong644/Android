@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Trip;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
