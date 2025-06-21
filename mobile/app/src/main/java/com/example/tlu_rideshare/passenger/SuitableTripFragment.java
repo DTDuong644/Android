@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Trip;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

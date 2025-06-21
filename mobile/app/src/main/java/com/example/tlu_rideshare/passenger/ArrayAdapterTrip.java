@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Trip;
 
 import java.util.List;
 

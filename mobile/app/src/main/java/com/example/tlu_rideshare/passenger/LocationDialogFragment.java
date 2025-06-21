@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
