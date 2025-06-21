@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Intent myIntent = new Intent(MainActivity.this, driver_add_trip.class);
+        Intent myIntent = new Intent(MainActivity.this, driver_trip.class);
         startActivity(myIntent);
     }
 }

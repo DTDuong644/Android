@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "99716148916",
+    "firebase_url": "https://androidapp1-36f1b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "androidapp1-36f1b",
+    "storage_bucket": "androidapp1-36f1b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99716148916:android:7d221ad822507bf78631e1",
+        "android_client_info": {
+          "package_name": "com.example.tlu_rideshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNbUV17YsMw0XFcYOuUEmnyMryyhBk_eE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

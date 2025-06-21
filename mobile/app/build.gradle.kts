@@ -1,6 +1,9 @@
+
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
+
 
 android {
     namespace = "com.example.tlu_rideshare"
@@ -41,4 +44,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.google.firebase:firebase-firestore:24.11.0")
 }

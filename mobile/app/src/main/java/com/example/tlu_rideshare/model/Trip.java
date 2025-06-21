@@ -1,6 +1,8 @@
 package com.example.tlu_rideshare.model;
 
-public class Trip {
+import java.io.Serializable;
+
+public class Trip implements Serializable {
     private String id;
     private String fromLocation;
     private String toLocation;
@@ -8,12 +10,16 @@ public class Trip {
     private String time;
     private int seatsAvailable;
     private int seatsBooked;
+    private String licensePlate;
+    private String carType;
+    private int price;
 
     public Trip() {
         // Required for Firebase
     }
 
-    public Trip(String id, String fromLocation, String toLocation, String date, String time, int seatsAvailable, int seatsBooked) {
+    public Trip(String id, String fromLocation, String toLocation, String date, String time,
+                int seatsAvailable, int seatsBooked, String licensePlate, String carType, int price) {
         this.id = id;
         this.fromLocation = fromLocation;
         this.toLocation = toLocation;
@@ -21,6 +27,9 @@ public class Trip {
         this.time = time;
         this.seatsAvailable = seatsAvailable;
         this.seatsBooked = seatsBooked;
+        this.licensePlate = licensePlate;
+        this.carType = carType;
+        this.price = price;
     }
 
     // Getters
@@ -31,6 +40,9 @@ public class Trip {
     public String getTime() { return time; }
     public int getSeatsAvailable() { return seatsAvailable; }
     public int getSeatsBooked() { return seatsBooked; }
+    public String getLicensePlate() { return licensePlate; }
+    public String getCarType() { return carType; }
+    public int getPrice() { return price; }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -40,4 +52,7 @@ public class Trip {
     public void setTime(String time) { this.time = time; }
     public void setSeatsAvailable(int seatsAvailable) { this.seatsAvailable = seatsAvailable; }
     public void setSeatsBooked(int seatsBooked) { this.seatsBooked = seatsBooked; }
+    public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
+    public void setCarType(String carType) { this.carType = carType; }
+    public void setPrice(int price) { this.price = price; }
 }

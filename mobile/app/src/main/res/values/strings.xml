@@ -1,3 +1,24 @@
 <resources>
+    <string name="user_icon">Ảnh người dùng</string>
+    <string name="delete_icon">Xóa khách hàng</string>
+
+    <string name="customer_name_placeholder">Tên:</string>
+    <string name="customer_pickup_placeholder">Đón:</string>
+    <string name="customer_dropoff_placeholder">Trả:</string>
+    <string name="customer_phone_placeholder">Sđt:</string>
+    <string name="customer_email_placeholder">Email:</string>
     <string name="app_name">TLU_RideShare</string>
+    <string name="cd_back">Quay lại</string>
+    <string name="cd_home">Trang chủ</string>
+    <string name="cd_trip">Chuyến đi</string>
+    <string name="cd_list">Danh sách</string>
+    <string name="cd_account">Tài khoản</string>
+
+    <!-- Tiêu đề & nhãn -->
+    <string name="title_customer_list">Danh sách khách hàng</string>
+    <string name="hint_search_customer">Tìm kiếm khách hàng</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_trip">Chuyến đi</string>
+    <string name="nav_list">Danh sách</string>
+    <string name="nav_account">Tài khoản</string>
 </resources>
