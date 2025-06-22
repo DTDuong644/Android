@@ -37,7 +37,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         Trip trip = tripList.get(position);
         int seatsLeft = trip.getSeatsAvailable() - trip.getSeatsBooked();
 
-        holder.tvTripTitle.setText("Chuyến #" + trip.getId());
+        holder.tvTripTitle.setText("Chuyến #" + trip.getTripID());
         holder.tvDateTime.setText("Giờ: " + trip.getTime() + " | Ngày: " + trip.getDate());
         holder.tvFrom.setText("Điểm đón: " + trip.getFromLocation());
         holder.tvTo.setText("Điểm trả: " + trip.getToLocation());
