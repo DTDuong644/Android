@@ -17,6 +17,7 @@ import com.example.tlu_rideshare.model.Trip;
 import java.util.List;
 
 public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.TripViewHolder> {
+
     private List<Trip> tripList;
     private FragmentActivity activity;
 
@@ -50,15 +51,33 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
     @Override
     public void onBindViewHolder(TripViewHolder holder, int position) {
         Trip trip = tripList.get(position);
+
+        // Debug log
+        android.util.Log.d("AdapterTrip", "Trip " + position + ": " + trip.getFromLocation() + " -> " + trip.getToLocation() + " | " + trip.getDate() + " " + trip.getTime());
+        android.util.Log.d("TripAdapter", "tripID: " + trip.getTripID());
+        android.util.Log.d("TripAdapter", "vihicleType = " + trip.getVihicleType());
+        android.util.Log.d("TripAdapter", "seatsAvailable = " + trip.getSeatsAvailable());
+        android.util.Log.d("TripAdapter", "seatsBooked = " + trip.getSeatsBooked());
+
         holder.tvTripTitle.setText("🚌 Chuyến đi " + (position + 1));
-        holder.tvDriver.setText("Tài xế: " + trip.getDriverName());
-        holder.tvTime.setText("Thời gian khởi hành: " + trip.getTime());
+
+        String driverID = trip.getDriverID();
+        String driverTempName = "Tài xế " + (driverID != null && driverID.length() >= 6
+                ? driverID.substring(0, 6)
+                : (driverID != null ? driverID : "Chưa rõ"));
+        holder.tvDriver.setText(driverTempName);
+
+        holder.tvTime.setText("Thời gian khởi hành: " + trip.getDate() + " " + trip.getTime());
         holder.tvPrice.setText("Giá: " + trip.getPrice() + " VNĐ");
 
-        if (trip.getVehicle().startsWith("Ô tô")) {
-            holder.tvVehicle.setText("Phương tiện: Ô tô (còn " + trip.getEmptyChair() + " chỗ)");
+        String vehicleType = trip.getVihicleType();
+        if (vehicleType != null) vehicleType = vehicleType.trim();
+
+        if (vehicleType != null && vehicleType.startsWith("Ô tô")) {
+            int emptySeats = Math.max(trip.getSeatsAvailable() - trip.getSeatsBooked(), 0);
+            holder.tvVehicle.setText("Phương tiện: Ô tô (còn " + emptySeats + " chỗ)");
         } else {
-            holder.tvVehicle.setText("Phương tiện: " + trip.getVehicle());
+            holder.tvVehicle.setText("Phương tiện: " + (vehicleType != null ? vehicleType : "Không rõ"));
         }
 
         holder.btnDetails.setOnClickListener(v -> {
@@ -68,7 +87,7 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
             seeDetailsFragment.setArguments(bundle);
             activity.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.tabContent, seeDetailsFragment)
-                    .addToBackStack(null) // Đã có, đảm bảo back stack
+                    .addToBackStack(null)
                     .commit();
         });
     }

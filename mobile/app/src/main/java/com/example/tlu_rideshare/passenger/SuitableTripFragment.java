@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.Trip;
 
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,11 +31,17 @@ public class SuitableTripFragment extends Fragment {
     private ArrayAdapterTrip adapter;
     private List<Trip> tripList;
     private TripViewModel tripViewModel;
-    private SimpleDateFormat dateTimeFormat;
-    private SimpleDateFormat dateFormat;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
     private TextView tvFrom, tvTo, tvDate;
 
-    public SuitableTripFragment() {
+    public SuitableTripFragment() {}
+
+    private String normalize(String str) {
+        if (str == null) return "";
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        return str.replaceAll("\\p{InCombiningDiacriticalMarks}+", "").toLowerCase().trim();
     }
 
     @Override
@@ -51,10 +58,6 @@ public class SuitableTripFragment extends Fragment {
         tvDate = view.findViewById(R.id.tvDate);
 
         tripList = new ArrayList<>();
-        dateTimeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.getDefault());
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
-        // Truyền requireActivity() vào ArrayAdapterTrip
         adapter = new ArrayAdapterTrip(tripList, requireActivity());
         recyclerView.setAdapter(adapter);
 
@@ -72,50 +75,64 @@ public class SuitableTripFragment extends Fragment {
 
         tripViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
             if (trips != null) {
-                String selectedDate = tripViewModel.getSelectedDate().getValue();
+                String selectedDateStr = tripViewModel.getSelectedDate().getValue();
                 String yourLocation = tripViewModel.getYourLocation().getValue();
                 String destination = tripViewModel.getDestination().getValue();
-                List<Trip> filteredTrips = new ArrayList<>();
 
-                if (selectedDate != null && yourLocation != null && destination != null) {
-                    Date currentDateTime = new Date();
-                    String currentDateStr = dateFormat.format(currentDateTime);
-
-                    for (Trip trip : trips) {
-                        try {
-                            Date tripDateTime = dateTimeFormat.parse(trip.getTime());
-                            String tripDate = dateFormat.format(tripDateTime);
-
-                            if (tripDate.equals(selectedDate) &&
-                                    trip.getYourLocation() != null && trip.getYourLocation().toLowerCase().contains(yourLocation.toLowerCase()) &&
-                                    trip.getDestination() != null && trip.getDestination().toLowerCase().contains(destination.toLowerCase())) {
-                                if (tripDate.equals(currentDateStr)) {
-                                    if (tripDateTime.after(currentDateTime)) {
-                                        filteredTrips.add(trip);
-                                    }
-                                } else {
-                                    filteredTrips.add(trip);
-                                }
-                            }
-                        } catch (ParseException e) {
-                            Log.e("SuitableTripFragment", "Parse error for time: " + trip.getTime(), e);
-                        }
-                    }
-                } else {
+                if (selectedDateStr == null || yourLocation == null || destination == null) {
                     Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin để tìm chuyến xe", Toast.LENGTH_LONG).show();
                     return;
                 }
 
+                String userFrom = normalize(yourLocation);
+                String userTo = normalize(destination);
+
+                List<Trip> filteredTrips = new ArrayList<>();
+
+                try {
+                    Date selectedDate = dateFormat.parse(selectedDateStr);
+                    Date today = dateFormat.parse(dateFormat.format(new Date())); // chỉ lấy ngày hiện tại
+
+                    for (Trip trip : trips) {
+                        String tripDateStr = trip.getDate() != null ? trip.getDate().trim() : "";
+                        String tripTime = trip.getTime() != null ? trip.getTime().trim() : "";
+                        String tripFrom = normalize(trip.getFromLocation());
+                        String tripTo = normalize(trip.getToLocation());
+
+                        if (!tripFrom.contains(userFrom)) continue;
+                        if (!tripTo.contains(userTo)) continue;
+
+                        Date tripDate = dateFormat.parse(tripDateStr);
+                        if (tripDate == null || selectedDate == null || tripDate.before(selectedDate)) continue;
+
+                        // Nếu là hôm nay thì lọc theo giờ
+                        if (tripDate.equals(today)) {
+                            Date currentTime = timeFormat.parse(timeFormat.format(new Date()));
+                            Date tripTimeDate = timeFormat.parse(tripTime);
+                            if (tripTimeDate != null && tripTimeDate.after(currentTime)) {
+                                filteredTrips.add(trip);
+                            }
+                        } else {
+                            filteredTrips.add(trip);
+                        }
+                    }
+
+                } catch (ParseException e) {
+                    Log.e("SuitableTripFragment", "Lỗi phân tích ngày/giờ", e);
+                }
+
                 tripList.clear();
                 tripList.addAll(filteredTrips);
-                Log.d("SuitableTripFragment", "Filtered trips count: " + filteredTrips.size());
                 adapter.notifyDataSetChanged();
 
+                Log.d("SuitableTripFragment", "✅ Số chuyến hợp lệ: " + filteredTrips.size());
+
                 if (tripList.isEmpty()) {
-                    Toast.makeText(getContext(), "Không có chuyến xe nào trong ngày này", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Không có chuyến xe nào phù hợp", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
 
         ImageView imgBack = view.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(v -> {

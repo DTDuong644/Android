@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.tlu_rideshare.R;
-import com.example.tlu_rideshare.model.Customer;
+import com.example.tlu_rideshare.model.FeedBack;
+import com.example.tlu_rideshare.model.User;
 import com.example.tlu_rideshare.model.Trip;
 
 public class AccountFragment extends Fragment {
@@ -42,7 +42,7 @@ public class AccountFragment extends Fragment {
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> editProfileLauncher;
-    private Customer customer;
+    private User customer;
     private String lastRequestedPermission;
 
     public AccountFragment() {
@@ -72,7 +72,7 @@ public class AccountFragment extends Fragment {
 
         boolean isVerified = prefs.getBoolean("isAccountVerified", false);
 
-        customer = new Customer(
+        customer = new User(
                 customerId,
                 avatar,
                 prefs.getString("descrip", "Chưa có mô tả"),
@@ -202,14 +202,19 @@ public class AccountFragment extends Fragment {
 
         btnRate.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), YourRatingActivity.class);
-            if (HistoryListActivity.getInstance() != null && !HistoryListActivity.getInstance().getTripHistoryList().isEmpty()) {
-                Trip trip = HistoryListActivity.getInstance().getTripHistoryList().get(0);
-                intent.putExtra("driverName", trip.getDriverName());
-                intent.putExtra("rating", trip.getRating());
-                intent.putExtra("destination", trip.getDestination());
+
+            HistoryListActivity history = HistoryListActivity.getInstance();
+            if (history != null && !history.getFeedbackList().isEmpty()) {
+                FeedBack feedback = history.getFeedbackList().get(0); // Lấy feedback đầu tiên
+
+                intent.putExtra("driverName", feedback.getDriverID());
+                intent.putExtra("rating", feedback.getRating());
+                intent.putExtra("tripID", feedback.getTripID());
             }
+
             startActivity(intent);
         });
+
 
         btnActivityAccount.setOnClickListener(v -> {
             SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
@@ -271,7 +276,7 @@ public class AccountFragment extends Fragment {
         return Uri.parse(path);
     }
 
-    private void saveCustomerData(Customer customer) {
+    private void saveCustomerData(User customer) {
         SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("customerId", customer.getCustomerId()); // ✅ Lưu customerId

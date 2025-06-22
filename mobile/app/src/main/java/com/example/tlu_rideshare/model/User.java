@@ -1,7 +1,7 @@
 package com.example.tlu_rideshare.model;
 
-public class Customer {
-    private String customerId; // ✅ thêm
+public class User {
+    private String customerId;
     private String avatar;
     private String fullName;
     private String email;
@@ -10,8 +10,8 @@ public class Customer {
     private String descrip;
     private boolean isAccountVerified;
 
-    public Customer(String customerId, String avatar, String descrip, String email, String fullName,
-                    String hometown, String phoneNumber, boolean isAccountVerified) {
+    public User(String customerId, String avatar, String descrip, String email, String fullName,
+                String hometown, String phoneNumber, boolean isAccountVerified) {
         this.customerId = customerId;
         this.avatar = avatar;
         this.descrip = descrip;
@@ -22,7 +22,6 @@ public class Customer {
         this.isAccountVerified = isAccountVerified;
     }
 
-    // ✅ Getter và Setter cho customerId
     public String getCustomerId() {
         return customerId;
     }
