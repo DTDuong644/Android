@@ -30,25 +30,59 @@ public class User {
         this.customerId = customerId;
     }
 
-    // Các getter & setter khác giữ nguyên...
-    public String getAvatar() { return avatar; }
-    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public String getAvatar() {
+        return avatar;
+    }
 
-    public String getDescrip() { return descrip; }
-    public void setDescrip(String descrip) { this.descrip = descrip; }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getDescrip() {
+        return descrip;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setDescrip(String descrip) {
+        this.descrip = descrip;
+    }
 
-    public String getHometown() { return hometown; }
-    public void setHometown(String hometown) { this.hometown = hometown; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public boolean isAccountVerified() { return isAccountVerified; }
-    public void setAccountVerified(boolean accountVerified) { isAccountVerified = accountVerified; }
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getHometown() {
+        return hometown;
+    }
+
+    public void setHometown(String hometown) {
+        this.hometown = hometown;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isAccountVerified() {
+        return isAccountVerified;
+    }
+
+    public void setAccountVerified(boolean accountVerified) {
+        isAccountVerified = accountVerified;
+    }
 }

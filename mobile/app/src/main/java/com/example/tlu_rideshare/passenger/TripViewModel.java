@@ -1,19 +1,66 @@
 package com.example.tlu_rideshare.passenger;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TripViewModel extends ViewModel {
-    private MutableLiveData<String> yourLocation = new MutableLiveData<>();
-    private MutableLiveData<String> destination = new MutableLiveData<>();
-    private MutableLiveData<String> selectedDate = new MutableLiveData<>();
-    private MutableLiveData<List<Trip>> tripList = new MutableLiveData<>(new ArrayList<>());
+
+    private final MutableLiveData<List<Trip>> tripList = new MutableLiveData<>(new ArrayList<>());
+
+    private final MutableLiveData<String> yourLocation = new MutableLiveData<>();
+    private final MutableLiveData<String> destination = new MutableLiveData<>();
+    private final MutableLiveData<String> selectedDate = new MutableLiveData<>();
+
+    public TripViewModel() {
+        fetchTripsFromFirebase();
+    }
+
+    private void fetchTripsFromFirebase() {
+        FirebaseFirestore.getInstance().collection("trips")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("TripViewModel", "Lỗi Firestore: " + error.getMessage());
+                        return;
+                    }
+
+                    if (value != null) {
+                        List<Trip> trips = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : value) {
+                            Trip trip = doc.toObject(Trip.class);
+                            trips.add(trip);
+                        }
+                        tripList.postValue(trips);
+                    }
+                });
+    }
+    public void updateTrip(Trip updatedTrip) {
+        List<Trip> currentTrips = tripList.getValue();
+        if (currentTrips == null) return;
+
+        for (int i = 0; i < currentTrips.size(); i++) {
+            if (currentTrips.get(i).getTripID().equals(updatedTrip.getTripID())) {
+                currentTrips.set(i, updatedTrip);
+                break;
+            }
+        }
+
+        tripList.setValue(new ArrayList<>(currentTrips)); // 🔥 Đặt lại để kích hoạt observer
+    }
+
+    public LiveData<List<Trip>> getTripList() {
+        return tripList;
+    }
 
     public void setYourLocation(String location) {
         yourLocation.setValue(location);
@@ -23,8 +70,8 @@ public class TripViewModel extends ViewModel {
         return yourLocation;
     }
 
-    public void setDestination(String destination) {
-        this.destination.setValue(destination);
+    public void setDestination(String dest) {
+        destination.setValue(dest);
     }
 
     public LiveData<String> getDestination() {
@@ -37,34 +84,5 @@ public class TripViewModel extends ViewModel {
 
     public LiveData<String> getSelectedDate() {
         return selectedDate;
-    }
-
-    public void addTrip(Trip trip) {
-        List<Trip> currentTrips = tripList.getValue();
-        if (currentTrips == null) {
-            currentTrips = new ArrayList<>();
-        }
-        currentTrips.add(trip);
-        tripList.setValue(currentTrips);
-    }
-
-    public void updateTrip(Trip updatedTrip) {
-        List<Trip> currentTrips = tripList.getValue();
-        if (currentTrips != null) {
-            for (int i = 0; i < currentTrips.size(); i++) {
-                if (currentTrips.get(i).getLicensePlate().equals(updatedTrip.getLicensePlate())) {
-                    currentTrips.set(i, updatedTrip);
-                    tripList.setValue(currentTrips);
-                    return;
-                }
-            }
-            // Nếu không tìm thấy, có thể thêm mới (tùy logic)
-            currentTrips.add(updatedTrip);
-            tripList.setValue(currentTrips);
-        }
-    }
-
-    public LiveData<List<Trip>> getTripList() {
-        return tripList;
     }
 }

@@ -72,7 +72,7 @@ public class LocationDialogFragment extends DialogFragment {
 
         // Tạo danh sách các vị trí gợi ý
         locationList = new ArrayList<>();
-        locationList.add("Trường Đại học Thủy lợi - Hà Nội");
+        locationList.add("TLU");
         // Hà Nội
         locationList.add("Bến xe Mỹ Đình - Hà Nội");
         locationList.add("Bến xe Giáp Bát - Hà Nội");

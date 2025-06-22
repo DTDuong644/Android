@@ -18,12 +18,11 @@ import java.util.List;
 
 public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAdapter.LocationViewHolder> {
 
-    private List<String> locationList;
-    private Trip trip;
-    private boolean isYourLocation; // Biến để xác định đang chọn yourLocation hay destination
-    private OnLocationSelectedListener listener;
+    private final List<String> locationList;
+    private final Trip trip;
+    private final boolean isYourLocation;
+    private final OnLocationSelectedListener listener;
 
-    // Interface để thông báo khi một vị trí được chọn
     public interface OnLocationSelectedListener {
         void onLocationSelected(String location, boolean isYourLocation);
     }
@@ -48,42 +47,38 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
         String location = locationList.get(position);
         holder.textViewLocationName.setText(location);
 
-        // Xử lý khi người dùng nhấn vào một vị trí
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
 
             if (isYourLocation) {
-                trip.setYourLocation(location);
-                Toast.makeText(holder.itemView.getContext(), "Đã chọn vị trí: " + location, Toast.LENGTH_SHORT).show();
+                trip.setFromLocation(location);
+                Toast.makeText(context, "Đã chọn vị trí: " + location, Toast.LENGTH_SHORT).show();
             } else {
-                trip.setDestination(location);
-                Toast.makeText(holder.itemView.getContext(), "Đã chọn điểm đến: " + location, Toast.LENGTH_SHORT).show();
+                trip.setToLocation(location);
+                Toast.makeText(context, "Đã chọn điểm đến: " + location, Toast.LENGTH_SHORT).show();
             }
-            // Gọi listener để thông báo vị trí đã được chọn
+
             if (listener != null) {
                 listener.onLocationSelected(location, isYourLocation);
             }
 
-            if (trip.getYourLocation() != null && trip.getDestination() != null) {
-                String yourProvince = extractProvince(trip.getYourLocation());
-                String destinationProvince = extractProvince(trip.getDestination());
+            String from = trip.getFromLocation();
+            String to = trip.getToLocation();
 
-                if (trip.getYourLocation().equals(trip.getDestination())) {
-                    trip.setYourLocation(null); // Xóa dữ liệu
-                    trip.setDestination(null);
-                    listener.onLocationSelected("", true); // clear UI
-                    listener.onLocationSelected("", false);
-                    new AlertDialog.Builder(context)
-                            .setTitle("Thông báo")
-                            .setMessage("Điểm đến và vị trí của bạn đang giống nhau.")
-                            .setPositiveButton("OK", null)
-                            .show();
-                } else if (!yourProvince.isEmpty() && yourProvince.equals(destinationProvince)) {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Thông báo")
-                            .setMessage("Điểm đến và vị trí của bạn đang cùng tỉnh, hãy chắc chắn với lựa chọn của mình!")
-                            .setPositiveButton("OK", null)
-                            .show();
+            if (from != null && to != null) {
+                String provinceFrom = extractProvince(from);
+                String provinceTo = extractProvince(to);
+
+                if (from.equals(to)) {
+                    trip.setFromLocation(null);
+                    trip.setToLocation(null);
+                    if (listener != null) {
+                        listener.onLocationSelected("", true);
+                        listener.onLocationSelected("", false);
+                    }
+                    showAlert(context, "Thông báo", "Điểm đến và vị trí của bạn đang giống nhau.");
+                } else if (!provinceFrom.isEmpty() && provinceFrom.equals(provinceTo)) {
+                    showAlert(context, "Thông báo", "Điểm đến và vị trí của bạn đang cùng tỉnh, hãy chắc chắn với lựa chọn của mình!");
                 }
             }
         });
@@ -103,11 +98,16 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
         }
     }
 
-    private String extractProvince(String locationName) {
-        String[] parts = locationName.split(" - ");
-        if (parts.length == 2) {
-            return parts[1].trim();
-        }
-        return "";
+    private String extractProvince(String location) {
+        String[] parts = location.split(" - ");
+        return parts.length == 2 ? parts[1].trim() : "";
+    }
+
+    private void showAlert(Context context, String title, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
     }
 }

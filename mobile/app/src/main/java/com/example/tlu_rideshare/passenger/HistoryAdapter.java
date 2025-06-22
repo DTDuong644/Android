@@ -8,17 +8,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.Trip;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
     private List<Trip> tripList;
+    private Set<String> ratedTripIDs = new HashSet<>(); // ✅ Bộ nhớ ID chuyến đã đánh giá
     private OnRateClickListener listener;
 
-    // Interface để xử lý sự kiện click nút Đánh giá
     public interface OnRateClickListener {
         void onRateClick(Trip trip, int position);
     }
@@ -26,6 +29,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public HistoryAdapter(List<Trip> tripList, OnRateClickListener listener) {
         this.tripList = tripList;
         this.listener = listener;
+    }
+
+    public void markTripAsRated(String tripID) {
+        ratedTripIDs.add(tripID);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -38,20 +46,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Trip trip = tripList.get(position);
-        holder.tvRoute.setText("Tuyến xe: " + trip.getYourLocation() + " → " + trip.getDestination());
-        holder.tvDriver.setText("Tài xế: " + trip.getDriverName());
-        holder.tvPhone.setText("Sđ điện thoại: " + trip.getPhoneNumber());
-        holder.tvPlate.setText("Biển số xe: " + trip.getLicensePlate());
-        holder.tvTime.setText("Thời gian: " + trip.getTime());
-        holder.tvSeats.setText("Số ghế: " + trip.getEmptyChair());
+
+        holder.tvRoute.setText("Tuyến xe: " + trip.getFromLocation() + " → " + trip.getToLocation());
+        holder.tvDriver.setText("Tài xế: " + trip.getDriverID()); // Hiện tại chưa có tên, chỉ có driverID
+        holder.tvPhone.setText("Sđt: Chưa có"); // Trip không còn phoneNumber
+        holder.tvPlate.setText("Biển số: " + trip.getLicensePlate());
+        holder.tvTime.setText("Thời gian: " + trip.getDate() + " " + trip.getTime());
+        holder.tvSeats.setText("Số ghế còn: " + (trip.getSeatsAvailable() - trip.getSeatsBooked()));
         holder.tvPrice.setText("Giá: " + trip.getPrice() + " VND");
 
-        // Ẩn nút Đánh giá nếu chuyến đi đã được đánh giá
-        if (trip.isRated()) {
+        if (ratedTripIDs.contains(trip.getTripID())) {
             holder.btnRate.setVisibility(View.GONE);
         } else {
             holder.btnRate.setVisibility(View.VISIBLE);
-            // Xử lý sự kiện click nút Đánh giá
             holder.btnRate.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onRateClick(trip, position);
@@ -66,7 +73,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvRoute, tvDriver, tvPhone, tvPlate, tvTime, tvSeats, tvPrice, tvVehicle;
+        TextView tvRoute, tvDriver, tvPhone, tvPlate, tvTime, tvSeats, tvPrice;
         Button btnRate;
 
         public ViewHolder(@NonNull View itemView) {

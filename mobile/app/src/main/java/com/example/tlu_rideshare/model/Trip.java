@@ -20,6 +20,8 @@ public class Trip implements Parcelable {
     private boolean isRated;
     private int rating;
 
+    private boolean userCreated = false;
+
     public Trip() {
         // Required for Firebase
     }
@@ -58,6 +60,7 @@ public class Trip implements Parcelable {
     public String getStatus() { return status; }
     public boolean isRated() { return isRated; }
     public int getRating() { return rating; }
+    public boolean isUserCreated() { return userCreated; }
 
     // Setters
     public void setTripID(String tripID) { this.tripID = tripID; }
@@ -74,6 +77,7 @@ public class Trip implements Parcelable {
     public void setStatus(String status) { this.status = status; }
     public void setRated(boolean rated) { this.isRated = rated; }
     public void setRating(int rating) { this.rating = rating; }
+    public void setUserCreated(boolean userCreated) { this.userCreated = userCreated; }
 
     // Parcelable Implementation
     protected Trip(Parcel in) {
@@ -91,6 +95,7 @@ public class Trip implements Parcelable {
         status = in.readString();
         isRated = in.readByte() != 0;
         rating = in.readInt();
+        userCreated = in.readByte() != 0;
     }
 
     public static final Creator<Trip> CREATOR = new Creator<Trip>() {
@@ -121,6 +126,7 @@ public class Trip implements Parcelable {
         dest.writeString(status);
         dest.writeByte((byte) (isRated ? 1 : 0));
         dest.writeInt(rating);
+        dest.writeByte((byte) (userCreated ? 1 : 0));
     }
 
     @Override

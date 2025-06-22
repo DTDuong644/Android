@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tlu_rideshare.MainActivity;
 import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.Trip;
 
@@ -28,30 +29,23 @@ public class HomeFragment extends Fragment {
     private List<Trip> tripList;
     private TripViewModel tripViewModel;
     private SimpleDateFormat dateTimeFormat;
-    private SimpleDateFormat dateFormat;
-    private String currentDate;
-    private Date currentDateTime;
 
-    public HomeFragment() {
-    }
+    public HomeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_passenger_layout, container, false);
 
-        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
-
         recyclerView = view.findViewById(R.id.recyclerViewTrips);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tripList = new ArrayList<>();
-        dateTimeFormat = new SimpleDateFormat("hh:mm, dd/MM/yyyy", Locale.getDefault());
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        currentDateTime = new Date();
-        currentDate = dateFormat.format(currentDateTime);
-
         adapter = new ArrayAdapterTrip(tripList, requireActivity());
         recyclerView.setAdapter(adapter);
+
+        dateTimeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.getDefault());
+
+        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
         tripViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
             if (trips != null) {
@@ -69,8 +63,8 @@ public class HomeFragment extends Fragment {
 
         Button btn_searchTrip = view.findViewById(R.id.btn_searchTrip);
         btn_searchTrip.setOnClickListener(view1 -> {
-            if (getActivity() instanceof HomeActivity) {
-                ((HomeActivity) getActivity()).switchToTab(1);
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).switchToTab(1);
             }
         });
 
@@ -79,14 +73,10 @@ public class HomeFragment extends Fragment {
 
     private boolean isTripOnCurrentDateAndAfterCurrentTime(Trip trip) {
         try {
-            currentDateTime = new Date();
-            currentDate = dateFormat.format(currentDateTime);
-            Date tripDateTime = dateTimeFormat.parse(trip.getTime());
-            String tripDate = dateFormat.format(tripDateTime);
-            if (!tripDate.equals(currentDate)) {
-                return false;
-            }
-            return tripDateTime.after(currentDateTime);
+            Date now = new Date();
+            String fullTripDateTime = trip.getTime() + ", " + trip.getDate();
+            Date tripDateTime = dateTimeFormat.parse(fullTripDateTime);
+            return tripDateTime != null && tripDateTime.after(now);
         } catch (ParseException e) {
             e.printStackTrace();
             return false;

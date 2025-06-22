@@ -22,139 +22,128 @@ import java.util.Locale;
 
 public class MoveFragment extends Fragment implements SelectLocationAdapter.OnLocationSelectedListener {
 
-    private Button btnYourLocation;
-    private Button btnDestination;
-    private Button btnTime;
-    private Button buttonSearch;
+    private Button btnFromLocation, btnToLocation, btnTime, btnSearch;
     private Trip trip;
     private TripViewModel tripViewModel;
-    private Calendar selectedDateTime;
-    private SimpleDateFormat dateFormat; // Định dạng ngày (dd/MM/yyyy)
-    private SimpleDateFormat timeFormat; // Định dạng giờ (hh:mm a)
+    private final Calendar selectedDate = Calendar.getInstance();
 
-    public MoveFragment() {
-        // Required empty public constructor
-    }
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    public MoveFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.move_fragment_passenger_layout, container, false);
 
-        // Khởi tạo ViewModel
         tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
-        // Khởi tạo định dạng ngày và giờ
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        timeFormat = new SimpleDateFormat("hh:mm", Locale.getDefault());
-
-        // Khởi tạo các thành phần giao diện
-        btnYourLocation = view.findViewById(R.id.btnYourLocation);
-        btnDestination = view.findViewById(R.id.btnDestination);
+        btnFromLocation = view.findViewById(R.id.btnYourLocation);
+        btnToLocation = view.findViewById(R.id.btnDestination);
         btnTime = view.findViewById(R.id.btnTime);
-        buttonSearch = view.findViewById(R.id.buttonSearch);
+        btnSearch = view.findViewById(R.id.buttonSearch);
 
-        // Khởi tạo đối tượng Trip với time là chuỗi chứa cả ngày và giờ
-        trip = new Trip("Nguyễn Văn A", "19:33, 07/06/2025", 150000, "Xe 16 chỗ");
+        trip = new Trip();
+        trip.setFromLocation("");
+        trip.setToLocation("");
+        trip.setDate("");
+        trip.setTime("");
 
-        // Khởi tạo Calendar với thời gian hiện tại
-        selectedDateTime = Calendar.getInstance();
-        selectedDateTime.setTime(new Date()); // Đặt thời gian hiện tại là 05:33 PM, 06/06/2025
-
-        // Mở LocationDialogFragment khi nhấn vào Vị trí của bạn
-        btnYourLocation.setOnClickListener(v -> {
+        btnFromLocation.setOnClickListener(v -> {
             LocationDialogFragment dialog = LocationDialogFragment.newInstance(true, trip);
             dialog.setOnLocationSelectedListener(this);
-            dialog.show(getParentFragmentManager(), "location_picker");
+            dialog.show(getParentFragmentManager(), "select_from");
         });
 
-        // Mở LocationDialogFragment khi nhấn vào Điểm đến
-        btnDestination.setOnClickListener(v -> {
+        btnToLocation.setOnClickListener(v -> {
             LocationDialogFragment dialog = LocationDialogFragment.newInstance(false, trip);
             dialog.setOnLocationSelectedListener(this);
-            dialog.show(getParentFragmentManager(), "location_picker");
+            dialog.show(getParentFragmentManager(), "select_to");
         });
 
-        // Hiển thị DatePickerDialog khi nhấn vào btnTime
-        btnTime.setOnClickListener(v -> btnShowSetDate_click(v));
+        btnTime.setOnClickListener(this::showDatePicker);
 
-        buttonSearch.setOnClickListener(v -> {
-            // Kiểm tra xem người dùng đã chọn vị trí và điểm đến chưa
-            if (trip.getYourLocation() == null || trip.getDestination() == null || trip.getTime() == null) {
-                Toast.makeText(getContext(), "Vui lòng chọn vị trí, điểm đến, Thời gian", Toast.LENGTH_SHORT).show();
-                return;
+        btnSearch.setOnClickListener(v -> {
+            if (validateTripData()) {
+                sendTripDataAndNavigate();
             }
-
-            // Kiểm tra ngày có hợp lệ không (không nằm trong quá khứ)
-            try {
-                String currentDateStr = dateFormat.format(new Date());
-                String tripTimeParts[] = trip.getTime().split(", ");
-                String tripDateStr = tripTimeParts[1]; // Lấy phần ngày (ví dụ: "07/06/2025")
-                Date currentDate = dateFormat.parse(currentDateStr);
-                Date tripDate = dateFormat.parse(tripDateStr);
-                if (tripDate.before(currentDate)) {
-                    Toast.makeText(getContext(), "Không thể chọn ngày trong quá khứ!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Lỗi khi kiểm tra ngày. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Lưu dữ liệu người dùng nhập vào ViewModel
-            String tripTimeParts[] = trip.getTime().split(", ");
-            String tripDateStr = tripTimeParts[1]; // Lấy ngày (ví dụ: "07/06/2025")
-            tripViewModel.setSelectedDate(tripDateStr);
-            tripViewModel.setYourLocation(trip.getYourLocation()); // Lưu vị trí bắt đầu
-            tripViewModel.setDestination(trip.getDestination());   // Lưu điểm đến
-
-            // Chuyển sang SuitableTripFragment bằng FragmentTransaction
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.tabContent, new SuitableTripFragment())
-                    .addToBackStack(null)
-                    .commit();
         });
 
         return view;
     }
 
-    // Phương thức được gọi khi nhấn btnTime
-    public void btnShowSetDate_click(View view) {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void showDatePicker(View view) {
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH);
+        int day = now.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                // Cập nhật ngày vào Calendar
-                selectedDateTime.set(year, month, dayOfMonth);
+        DatePickerDialog datePicker = new DatePickerDialog(requireContext(),
+                (DatePicker view1, int y, int m, int d) -> {
+                    selectedDate.set(y, m, d);
+                    Date selected = selectedDate.getTime();
+                    String selectedDateStr = dateFormat.format(selected);
 
-                // Định dạng ngày đã chọn
-                String selectedDateStr = dateFormat.format(selectedDateTime.getTime());
+                    String selectedTime;
+                    if (dateFormat.format(new Date()).equals(selectedDateStr)) {
+                        selectedTime = timeFormat.format(new Date());
+                    } else {
+                        selectedTime = "00:00";
+                    }
 
-                // Lấy giờ hiện tại từ trip.time (phần trước dấu ", ")
-                String currentTimeStr = trip.getTime().split(", ")[0]; // Lấy phần giờ (ví dụ: "05:33 PM")
+                    trip.setDate(selectedDateStr);
+                    trip.setTime(selectedTime);
+                    btnTime.setText(selectedDateStr + " " + selectedTime);
+                }, year, month, day);
 
-                // Cập nhật time với ngày mới và giờ hiện tại
-                trip.setTime(currentTimeStr + ", " + selectedDateStr); // Ví dụ: "05:33 PM, 07/06/2025"
+        datePicker.show();
+    }
 
-                // Cập nhật văn bản của btnTime để hiển thị ngày đã chọn
-                btnTime.setText(selectedDateStr);
+    private boolean validateTripData() {
+        if (trip.getFromLocation().isEmpty() ||
+                trip.getToLocation().isEmpty() ||
+                trip.getDate().isEmpty() ||
+                trip.getTime().isEmpty()) {
+            Toast.makeText(getContext(), "Vui lòng chọn đầy đủ thông tin chuyến đi!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        try {
+            Date current = dateFormat.parse(dateFormat.format(new Date()));
+            Date selected = dateFormat.parse(trip.getDate());
+            if (selected != null && selected.before(current)) {
+                Toast.makeText(getContext(), "Không thể chọn ngày trong quá khứ!", Toast.LENGTH_SHORT).show();
+                return false;
             }
-        }, year, month, day);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Lỗi xử lý ngày!", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            return false;
+        }
 
-        datePickerDialog.show();
+        return true;
+    }
+
+    private void sendTripDataAndNavigate() {
+        tripViewModel.setYourLocation(trip.getFromLocation());
+        tripViewModel.setDestination(trip.getToLocation());
+        tripViewModel.setSelectedDate(trip.getDate());
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.tabContent, new SuitableTripFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
-    public void onLocationSelected(String location, boolean isYourLocation) {
-        if (isYourLocation) {
-            btnYourLocation.setText(location);
+    public void onLocationSelected(String location, boolean isFromLocation) {
+        if (isFromLocation) {
+            trip.setFromLocation(location);
+            btnFromLocation.setText(location);
         } else {
-            btnDestination.setText(location);
+            trip.setToLocation(location);
+            btnToLocation.setText(location);
         }
     }
 }
