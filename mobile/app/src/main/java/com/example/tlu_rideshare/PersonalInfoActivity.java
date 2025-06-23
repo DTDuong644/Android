@@ -3,9 +3,11 @@ package com.example.tlu_rideshare;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,9 +15,24 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PersonalInfoActivity extends AppCompatActivity {
+
+    private static final String TAG = "PersonalInfoActivity";
+
+    private EditText etFullName, etDob, etPhoneNumber, etHometown;
+    private Button btnSubmit;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +46,18 @@ public class PersonalInfoActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Gender dropdown
-        AutoCompleteTextView genderAutoCompleteTextView = findViewById(R.id.genderAutoCompleteTextView);
-        String[] genderOptions = {"Nam", "Nữ", "Khác"};
-        ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, genderOptions);
-        genderAutoCompleteTextView.setAdapter(genderAdapter);
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        // Date pickers
-        EditText dobEditText = findViewById(R.id.dobEditText);
-        EditText issueDateEditText = findViewById(R.id.issueDateEditText);
-        EditText expiryDateEditText = findViewById(R.id.expiryDateEditText);
+        etFullName = findViewById(R.id.fullNameEditText);
+        etDob = findViewById(R.id.dobEditText);
+        etPhoneNumber = findViewById(R.id.phoneNumberEditText);
+        etHometown = findViewById(R.id.hometownEditText);
+        btnSubmit = findViewById(R.id.submitButton);
 
-        dobEditText.setOnClickListener(v -> showDatePickerDialog(dobEditText));
-        issueDateEditText.setOnClickListener(v -> showDatePickerDialog(issueDateEditText));
-        expiryDateEditText.setOnClickListener(v -> showDatePickerDialog(expiryDateEditText));
+        etDob.setOnClickListener(v -> showDatePickerDialog(etDob));
 
-        // Submit
-        findViewById(R.id.submitButton).setOnClickListener(v -> {
-            Intent intent = new Intent(PersonalInfoActivity.this, AccountStatusDoneActivity.class);
-            startActivity(intent);
-            finish(); // Optional
-        });
+        btnSubmit.setOnClickListener(v -> savePersonalInfo());
     }
 
     private void showDatePickerDialog(final EditText editText) {
@@ -64,5 +72,59 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     editText.setText(date);
                 }, year, month, day);
         dialog.show();
+    }
+
+    private void savePersonalInfo() {
+        String fullName = etFullName.getText().toString().trim();
+        String dob = etDob.getText().toString().trim();
+        String phoneNumber = etPhoneNumber.getText().toString().trim();
+        String hometown = etHometown.getText().toString().trim();
+
+        if (TextUtils.isEmpty(fullName)) {
+            etFullName.setError("Vui lòng nhập họ và tên.");
+            return;
+        }
+        if (TextUtils.isEmpty(dob)) {
+            etDob.setError("Vui lòng chọn ngày sinh.");
+            return;
+        }
+        if (TextUtils.isEmpty(phoneNumber)) {
+            etPhoneNumber.setError("Vui lòng nhập số điện thoại.");
+            return;
+        }
+        if (TextUtils.isEmpty(hometown)) {
+            etHometown.setError("Vui lòng nhập quê quán.");
+            return;
+        }
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("fullName", fullName);
+            userData.put("dob", dob);
+            userData.put("phoneNumber", phoneNumber);
+            userData.put("hometown", hometown);
+            // Lưu các trường cũ từ đăng ký (nếu có, ví dụ: email)
+            userData.put("email", user.getEmail());
+
+            db.collection("users").document(uid)
+                    .set(userData)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Lưu thông tin cá nhân thành công.");
+                            Toast.makeText(PersonalInfoActivity.this, "Lưu thông tin thành công!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(PersonalInfoActivity.this, ProfileActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Log.e(TAG, "Lưu thông tin thất bại.", task.getException());
+                            Toast.makeText(PersonalInfoActivity.this, "Lưu thông tin thất bại. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else {
+            Log.e(TAG, "Không tìm thấy người dùng hiện tại.");
+            Toast.makeText(this, "Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+        }
     }
 }

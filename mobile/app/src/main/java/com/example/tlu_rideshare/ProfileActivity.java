@@ -74,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Chuyển sang AccountStatusActivity (Trạng thái tài khoản)
         accountStatusItem.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, AccountStatusActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, PersonalInfoActivity.class);
             startActivity(intent);
         });
 
