@@ -60,6 +60,8 @@ public class HomeFragment extends Fragment {
                 .whereEqualTo("userID", currentUserId)
                 .get()
                 .addOnSuccessListener(bookingSnapshots -> {
+                    if (!isAdded()) return; // ✅ Đảm bảo Fragment còn tồn tại
+
                     Set<String> completedTripIDs = new HashSet<>();
                     for (var doc : bookingSnapshots) {
                         Booking booking = doc.toObject(Booking.class);
@@ -71,8 +73,9 @@ public class HomeFragment extends Fragment {
                     db.collection("trips")
                             .get()
                             .addOnSuccessListener(tripSnapshots -> {
-                                tripList.clear();
+                                if (!isAdded()) return; // ✅ Kiểm tra lại trước khi xử lý
 
+                                tripList.clear();
                                 String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
 
                                 for (var doc : tripSnapshots) {
@@ -93,13 +96,16 @@ public class HomeFragment extends Fragment {
                                 adapter.notifyDataSetChanged();
 
                                 if (tripList.isEmpty()) {
-                                    Toast.makeText(requireContext(), "Không có chuyến đi nào trong ngày hôm nay", Toast.LENGTH_SHORT).show();
+                                    if (isAdded()) { // ✅ Tránh crash khi Toast
+                                        Toast.makeText(requireContext(), "Không có chuyến đi nào trong ngày hôm nay", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             })
                             .addOnFailureListener(e -> Log.e("HomeFragment", "Lỗi tải trips: " + e.getMessage()));
                 })
                 .addOnFailureListener(e -> Log.e("HomeFragment", "Lỗi tải bookings: " + e.getMessage()));
     }
+
 
     private boolean isTripInFuture(Trip trip) {
         try {
