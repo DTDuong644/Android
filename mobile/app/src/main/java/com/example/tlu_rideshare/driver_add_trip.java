@@ -195,7 +195,7 @@ public class driver_add_trip extends AppCompatActivity {
         driverID = "tnsUMBoQvzYFqPerD5dSURqcl543";
         //driverID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Trip trip = new Trip(tripID, from, to, driverID, date, time,
-                seats, 0, licensePlate, vehicleType, price);
+                seats, 0, licensePlate, vehicleType, price, "confirm");
 
         db.collection("trips").document(tripID).set(trip)
                 .addOnSuccessListener(unused -> {

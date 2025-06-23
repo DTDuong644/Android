@@ -13,6 +13,12 @@
         android:theme="@style/Theme.TLU_RideShare"
         tools:targetApi="31">
         <activity
+            android:name=".driver_edit_trip"
+            android:exported="false" />
+        <activity
+            android:name=".driver_edtit_trip"
+            android:exported="false" />
+        <activity
             android:name=".driver_home"
             android:exported="false" />
         <activity

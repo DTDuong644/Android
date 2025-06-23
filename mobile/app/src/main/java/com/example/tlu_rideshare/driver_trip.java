@@ -45,6 +45,7 @@ public class driver_trip extends AppCompatActivity {
         tripList.clear();
 
         db.collection("trips")
+                .whereEqualTo("status", "confirm") // Lọc chỉ những chuyến có trạng thái "confirm"
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -58,4 +59,5 @@ public class driver_trip extends AppCompatActivity {
                     }
                 });
     }
+
 }

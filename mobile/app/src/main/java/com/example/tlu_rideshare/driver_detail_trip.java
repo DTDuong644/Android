@@ -18,9 +18,12 @@ public class driver_detail_trip extends AppCompatActivity {
     private ImageButton imageButtonBack;
     private Button btnHuyChuyen;
 
+    Button btnSuaThongTin;
+
     private FirebaseFirestore db;
     private Trip trip;
 
+    private Button btnHoanThanh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +44,8 @@ public class driver_detail_trip extends AppCompatActivity {
         tvGiaVe = findViewById(R.id.tvGiaVe);
         imageButtonBack = findViewById(R.id.imageButton);
         btnHuyChuyen = findViewById(R.id.btnHuyChuyen);
-
+        btnSuaThongTin = findViewById(R.id.btnSuaThongTin);
+        btnHoanThanh = findViewById(R.id.btnHoanThanh);
         // Nhận dữ liệu chuyến đi
         trip = (Trip) getIntent().getSerializableExtra("trip");
 
@@ -57,6 +61,7 @@ public class driver_detail_trip extends AppCompatActivity {
             tvLoaiXe.setText("Loại xe: " + trip.getVihicleType());
             tvBienSo.setText("Biển số: " + trip.getLicensePlate());
             tvGiaVe.setText("Giá vé: " + trip.getPrice() + " VNĐ");
+
         }
 
         // Quay lại màn hình trước
@@ -85,6 +90,53 @@ public class driver_detail_trip extends AppCompatActivity {
                         }
                     })
                     .setNegativeButton("Quay lại", null)
+                    .show();
+        });
+
+        btnSuaThongTin.setOnClickListener(v -> {
+            Intent intent = new Intent(driver_detail_trip.this, driver_edit_trip.class);
+            intent.putExtra("trip", trip);
+            startActivity(intent);
+        });
+
+        btnHoanThanh.setOnClickListener(v -> {
+            if (trip == null || trip.getTripID() == null) {
+                Toast.makeText(driver_detail_trip.this, "Không tìm thấy chuyến đi", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Hiển thị hộp thoại xác nhận
+            new android.app.AlertDialog.Builder(driver_detail_trip.this)
+                    .setTitle("Xác nhận hoàn thành")
+                    .setMessage("Bạn có chắc chắn muốn đánh dấu chuyến đi này là đã hoàn thành?\nTất cả booking liên quan cũng sẽ được cập nhật.")
+                    .setPositiveButton("Xác nhận", (dialog, which) -> {
+                        // Bước 1: Cập nhật status trip
+                        db.collection("trips").document(trip.getTripID())
+                                .update("status", "complete")
+                                .addOnSuccessListener(aVoid -> {
+                                    // Bước 2: Cập nhật các booking liên quan
+                                    db.collection("bookings")
+                                            .whereEqualTo("tripID", trip.getTripID())
+                                            .get()
+                                            .addOnSuccessListener(querySnapshots -> {
+                                                for (var doc : querySnapshots) {
+                                                    doc.getReference().update("status", "complete");
+                                                }
+                                                Toast.makeText(driver_detail_trip.this, "Đã hoàn thành chuyến đi và cập nhật bookings", Toast.LENGTH_SHORT).show();
+
+                                                // Quay lại màn hình driver_trip
+                                                Intent intent = new Intent(driver_detail_trip.this, driver_trip.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e ->
+                                                    Toast.makeText(driver_detail_trip.this, "Lỗi cập nhật bookings: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(driver_detail_trip.this, "Lỗi cập nhật chuyến đi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    })
+                    .setNegativeButton("Hủy", null)
                     .show();
         });
 

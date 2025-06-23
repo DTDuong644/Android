@@ -15,13 +15,15 @@ public class Trip implements Serializable {
     private String vihicleType;
     private int price;
 
+    private String status;
+
     public Trip() {
         // Required for Firebase
     }
 
     public Trip(String tripID, String fromLocation, String toLocation, String driverID,
                 String date, String time, int seatsAvailable, int seatsBooked,
-                String licensePlate, String vihicleType, int price) {
+                String licensePlate, String vihicleType, int price, String status) {
         this.tripID = tripID;
         this.fromLocation = fromLocation;
         this.toLocation = toLocation;
@@ -33,6 +35,7 @@ public class Trip implements Serializable {
         this.licensePlate = licensePlate;
         this.vihicleType = vihicleType;
         this.price = price;
+        this.status = status;
     }
 
     // Getters
@@ -80,6 +83,10 @@ public class Trip implements Serializable {
         return price;
     }
 
+    public String getStatus(){
+        return status;
+    }
+
     // Setters
     public void setTripID(String tripID) {
         this.tripID = tripID;
@@ -123,5 +130,9 @@ public class Trip implements Serializable {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 }
