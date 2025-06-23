@@ -30,7 +30,7 @@
             android:id="@+id/btn_driver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_button_nonactive"
+            android:background="@drawable/custom_button"
             android:text="Tôi muốn lái xe"
             app:backgroundTint="@null" />
 
@@ -38,8 +38,8 @@
             android:id="@+id/btn_rider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/custom_button_nonactive"
             android:layout_marginStart="8dp"
-            android:background="@drawable/custom_button"
             android:text="Tôi cần đi xe"
             android:textColor="#FFFFFF"
             app:backgroundTint="@null" />

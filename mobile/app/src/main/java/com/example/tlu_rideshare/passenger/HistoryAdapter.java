@@ -10,30 +10,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Booking;
 import com.example.tlu_rideshare.model.Trip;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
-
     private List<Trip> tripList;
-    private Set<String> ratedTripIDs = new HashSet<>(); // ✅ Bộ nhớ ID chuyến đã đánh giá
+    private List<Booking> bookingList;
     private OnRateClickListener listener;
 
     public interface OnRateClickListener {
         void onRateClick(Trip trip, int position);
     }
 
-    public HistoryAdapter(List<Trip> tripList, OnRateClickListener listener) {
+    public HistoryAdapter(List<Trip> tripList, List<Booking> bookingList, OnRateClickListener listener) {
         this.tripList = tripList;
+        this.bookingList = bookingList;
         this.listener = listener;
-    }
-
-    public void markTripAsRated(String tripID) {
-        ratedTripIDs.add(tripID);
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -48,14 +42,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         Trip trip = tripList.get(position);
 
         holder.tvRoute.setText("Tuyến xe: " + trip.getFromLocation() + " → " + trip.getToLocation());
-        holder.tvDriver.setText("Tài xế: " + trip.getDriverID()); // Hiện tại chưa có tên, chỉ có driverID
-        holder.tvPhone.setText("Sđt: Chưa có"); // Trip không còn phoneNumber
+        holder.tvDriver.setText("Tài xế: " + trip.getDriverID());
+        holder.tvPhone.setText("Sđt: Chưa có");
         holder.tvPlate.setText("Biển số: " + trip.getLicensePlate());
         holder.tvTime.setText("Thời gian: " + trip.getDate() + " " + trip.getTime());
-        holder.tvSeats.setText("Số ghế còn: " + (trip.getSeatsAvailable() - trip.getSeatsBooked()));
-        holder.tvPrice.setText("Giá: " + trip.getPrice() + " VND");
+        holder.tvSeats.setText("Số ghế đặt: " + trip.getSeatsBooked());
+        holder.tvPrice.setText("Giá: " + trip.getPrice() * trip.getSeatsBooked() + " VND");
 
-        if (ratedTripIDs.contains(trip.getTripID())) {
+        boolean isRated = true; // Mặc định là đã đánh giá
+        for (Booking bk : bookingList) {
+            if (bk.getTripID().equals(trip.getTripID()) && !bk.isRated()) {
+                isRated = false;
+                break;
+            }
+        }
+
+        if (isRated) {
             holder.btnRate.setVisibility(View.GONE);
         } else {
             holder.btnRate.setVisibility(View.VISIBLE);

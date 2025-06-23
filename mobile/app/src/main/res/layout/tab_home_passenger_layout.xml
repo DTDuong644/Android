@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#F0EBEB"
     android:orientation="vertical"
-    tools:context=".passenger.HomeActivity">
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/tabContent"

@@ -1,5 +1,6 @@
 package com.example.tlu_rideshare.passenger;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,6 @@ public class YourRatingAdapter extends RecyclerView.Adapter<YourRatingAdapter.Vi
 
         Trip relatedTrip = tripMap.get(feedback.getTripID());
         if (relatedTrip != null) {
-            // ✅ Sửa dùng fromLocation và toLocation thay vì yourLocation và destination
             holder.tvRide.setText("Tuyến: " + relatedTrip.getFromLocation() + " → " + relatedTrip.getToLocation());
         } else {
             holder.tvRide.setText("Tuyến: [Không xác định]");
@@ -83,9 +83,16 @@ public class YourRatingAdapter extends RecyclerView.Adapter<YourRatingAdapter.Vi
         }
     }
 
-    private String formatTimestamp(java.sql.Timestamp timestamp) {
-        if (timestamp == null) return "";
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-        return sdf.format(timestamp);
+    private String formatTimestamp(com.google.firebase.Timestamp timestamp) {
+        try {
+            if (timestamp == null) return "Không rõ";
+            java.util.Date date = timestamp.toDate(); // ← Chuyển Timestamp -> Date
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
+            return sdf.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Không rõ";
+        }
     }
+
 }

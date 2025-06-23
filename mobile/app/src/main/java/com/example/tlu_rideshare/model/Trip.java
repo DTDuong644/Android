@@ -3,8 +3,6 @@ package com.example.tlu_rideshare.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.database.PropertyName;
-
 public class Trip implements Parcelable {
     private String tripID;
     private String driverID;
@@ -17,13 +15,11 @@ public class Trip implements Parcelable {
     private String time;
     private String date;
     private String vihicleType;
-
-    private boolean rated;
-    private boolean userCreated = false;
+    private String status;
 
     public Trip() {}
 
-    // Getters/Setters
+    // Getters và Setters
     public String getTripID() { return tripID; }
     public void setTripID(String tripID) { this.tripID = tripID; }
 
@@ -57,13 +53,10 @@ public class Trip implements Parcelable {
     public String getVihicleType() { return vihicleType; }
     public void setVihicleType(String vihicleType) { this.vihicleType = vihicleType; }
 
-    public boolean isRated() { return rated; }
-    public void setRated(boolean rated) { this.rated = rated; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public boolean isUserCreated() { return userCreated; }
-    public void setUserCreated(boolean userCreated) { this.userCreated = userCreated; }
-
-    // Parcelable
+    // Parcelable implementation
     protected Trip(Parcel in) {
         tripID = in.readString();
         driverID = in.readString();
@@ -75,21 +68,9 @@ public class Trip implements Parcelable {
         seatsBooked = in.readInt();
         time = in.readString();
         date = in.readString();
-        vihicleType = in.readString(); // sửa chỗ này
-        rated = in.readByte() != 0;
+        vihicleType = in.readString();
+        status = in.readString();
     }
-
-    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
-        @Override
-        public Trip createFromParcel(Parcel in) {
-            return new Trip(in);
-        }
-
-        @Override
-        public Trip[] newArray(int size) {
-            return new Trip[size];
-        }
-    };
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -103,14 +84,24 @@ public class Trip implements Parcelable {
         dest.writeInt(seatsBooked);
         dest.writeString(time);
         dest.writeString(date);
-        dest.writeString(vihicleType); // sửa chỗ này
-        dest.writeByte((byte) (rated ? 1 : 0));
+        dest.writeString(vihicleType);
+        dest.writeString(status);
     }
 
     @Override
     public int describeContents() {
         return 0;
     }
+
+    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
+        @Override
+        public Trip createFromParcel(Parcel in) {
+            return new Trip(in);
+        }
+
+        @Override
+        public Trip[] newArray(int size) {
+            return new Trip[size];
+        }
+    };
 }
-
-

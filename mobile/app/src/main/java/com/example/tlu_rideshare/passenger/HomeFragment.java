@@ -1,84 +1,113 @@
 package com.example.tlu_rideshare.passenger;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.MainActivity;
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Booking;
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArrayAdapterTrip adapter;
-    private List<Trip> tripList;
-    private TripViewModel tripViewModel;
-    private SimpleDateFormat dateTimeFormat;
+    private final List<Trip> tripList = new ArrayList<>();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final String currentUserId = "user_demo"; // 🔁 Sửa thành UID thật nếu cần
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.getDefault());
 
     public HomeFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_passenger_layout, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerViewTrips);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        tripList = new ArrayList<>();
         adapter = new ArrayAdapterTrip(tripList, requireActivity());
         recyclerView.setAdapter(adapter);
 
-        dateTimeFormat = new SimpleDateFormat("HH:mm, dd/MM/yyyy", Locale.getDefault());
-
-        tripViewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
-
-        tripViewModel.getTripList().observe(getViewLifecycleOwner(), trips -> {
-            if (trips != null) {
-                List<Trip> filteredTrips = new ArrayList<>();
-                for (Trip trip : trips) {
-                    if (isTripOnCurrentDateAndAfterCurrentTime(trip) && !trip.isUserCreated()) {
-                        filteredTrips.add(trip);
-                    }
-                }
-                tripList.clear();
-                tripList.addAll(filteredTrips);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        Button btn_searchTrip = view.findViewById(R.id.btn_searchTrip);
-        btn_searchTrip.setOnClickListener(view1 -> {
+        Button btnSearchTrip = view.findViewById(R.id.btn_searchTrip);
+        btnSearchTrip.setOnClickListener(v -> {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).switchToTab(1);
             }
         });
 
+        loadTrips();
+
         return view;
     }
 
-    private boolean isTripOnCurrentDateAndAfterCurrentTime(Trip trip) {
+    private void loadTrips() {
+        db.collection("bookings")
+                .whereEqualTo("userID", currentUserId)
+                .get()
+                .addOnSuccessListener(bookingSnapshots -> {
+                    Set<String> completedTripIDs = new HashSet<>();
+                    for (var doc : bookingSnapshots) {
+                        Booking booking = doc.toObject(Booking.class);
+                        if ("completed".equalsIgnoreCase(booking.getStatus())) {
+                            completedTripIDs.add(booking.getTripID());
+                        }
+                    }
+
+                    db.collection("trips")
+                            .get()
+                            .addOnSuccessListener(tripSnapshots -> {
+                                tripList.clear();
+
+                                String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+
+                                for (var doc : tripSnapshots) {
+                                    Trip trip = doc.toObject(Trip.class);
+                                    if (trip.getTripID() == null || trip.getStatus() == null || trip.getDate() == null)
+                                        continue;
+
+                                    boolean isToday = trip.getDate().equals(today);
+                                    boolean isCanceledOrCompleted = trip.getStatus().equalsIgnoreCase("cancel") ||
+                                            trip.getStatus().equalsIgnoreCase("completed");
+                                    boolean isAlreadyCompletedByUser = completedTripIDs.contains(trip.getTripID());
+
+                                    if (isToday && !isCanceledOrCompleted && !isAlreadyCompletedByUser) {
+                                        tripList.add(trip);
+                                    }
+                                }
+
+                                adapter.notifyDataSetChanged();
+
+                                if (tripList.isEmpty()) {
+                                    Toast.makeText(requireContext(), "Không có chuyến đi nào trong ngày hôm nay", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.e("HomeFragment", "Lỗi tải trips: " + e.getMessage()));
+                })
+                .addOnFailureListener(e -> Log.e("HomeFragment", "Lỗi tải bookings: " + e.getMessage()));
+    }
+
+    private boolean isTripInFuture(Trip trip) {
         try {
-            Date now = new Date();
-            String fullTripDateTime = trip.getTime() + ", " + trip.getDate();
-            Date tripDateTime = dateTimeFormat.parse(fullTripDateTime);
-            return tripDateTime != null && tripDateTime.after(now);
+            String fullDateTime = trip.getTime() + ", " + trip.getDate();
+            Date tripDateTime = dateTimeFormat.parse(fullDateTime);
+            return tripDateTime != null && tripDateTime.after(new Date());
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("DateParse", "Lỗi phân tích ngày giờ: " + e.getMessage());
             return false;
         }
     }
