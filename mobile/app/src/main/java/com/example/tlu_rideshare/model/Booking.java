@@ -10,6 +10,7 @@ public class Booking implements Serializable {
     private Timestamp bookingTime;
     private String status;
     private int seatsBooked;
+    private boolean rated = false;
 
     public Booking() {}
 
@@ -67,6 +68,14 @@ public class Booking implements Serializable {
 
     public void setSeatsBooked(int seatsBooked) {
         this.seatsBooked = seatsBooked;
+    }
+
+    public boolean isRated() {
+        return rated;
+    }
+
+    public void setRated(boolean rated) {
+        this.rated = rated;
     }
 
 }

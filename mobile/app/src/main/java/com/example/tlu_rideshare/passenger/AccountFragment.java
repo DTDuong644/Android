@@ -201,18 +201,20 @@ public class AccountFragment extends Fragment {
         });
 
         btnRate.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), YourRatingActivity.class);
+            SharedPreferences prefs = requireContext().getSharedPreferences("FeedbackPrefs", Context.MODE_PRIVATE);
+            String driverID = prefs.getString("latestFeedbackDriver", null);
+            int rating = prefs.getInt("latestFeedbackRating", -1);
+            String tripID = prefs.getString("latestFeedbackTrip", null);
 
-            HistoryListActivity history = HistoryListActivity.getInstance();
-            if (history != null && !history.getFeedbackList().isEmpty()) {
-                FeedBack feedback = history.getFeedbackList().get(0); // Lấy feedback đầu tiên
-
-                intent.putExtra("driverName", feedback.getDriverID());
-                intent.putExtra("rating", feedback.getRating());
-                intent.putExtra("tripID", feedback.getTripID());
+            if (driverID != null && tripID != null && rating != -1) {
+                Intent intent = new Intent(getActivity(), YourRatingActivity.class);
+                intent.putExtra("driverName", driverID);
+                intent.putExtra("rating", rating);
+                intent.putExtra("tripID", tripID);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "Chưa có đánh giá nào", Toast.LENGTH_SHORT).show();
             }
-
-            startActivity(intent);
         });
 
 

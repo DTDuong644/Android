@@ -3,7 +3,6 @@ package com.example.tlu_rideshare.passenger;
 import static com.example.tlu_rideshare.passenger.YourRatingAdapter.getFeedback;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,57 +11,36 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.MainActivity;
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.model.Booking;
 import com.example.tlu_rideshare.model.FeedBack;
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.firebase.Timestamp;
+import java.util.*;
 
 public class HistoryListActivity extends AppCompatActivity {
 
-    private static final int RATING_REQUEST_CODE = 1001;
-    private static final String PREF_RATED_TRIPS = "rated_trips";
-
-    private static HistoryListActivity instance;
+    private final String currentUserId = "user_demo";
 
     private RecyclerView recyclerViewHistory;
     private HistoryAdapter adapter;
     private List<Trip> tripHistoryList;
-    private List<FeedBack> feedbackList;
+    private List<Booking> bookingList;
     private Button btnSearchNewTrip;
     private ImageView imageViewBack;
-
-    private TripViewModel tripViewModel;
-
-    public static HistoryListActivity getInstance() {
-        return instance;
-    }
-
-    public List<Trip> getTripHistoryList() {
-        return tripHistoryList;
-    }
-
-    public List<FeedBack> getFeedbackList() {
-        return feedbackList;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
         setContentView(R.layout.history_list_layout);
 
         recyclerViewHistory = findViewById(R.id.recyclerViewHistory);
@@ -70,21 +48,13 @@ public class HistoryListActivity extends AppCompatActivity {
         imageViewBack = findViewById(R.id.imageView);
 
         tripHistoryList = new ArrayList<>();
-        feedbackList = new ArrayList<>();
+        bookingList = new ArrayList<>();
 
-        adapter = new HistoryAdapter(tripHistoryList, this::showRatingDialog);
+        adapter = new HistoryAdapter(tripHistoryList, bookingList, this::showRatingDialog);
         recyclerViewHistory.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewHistory.setAdapter(adapter);
 
-        tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
-        tripViewModel.getTripList().observe(this, trips -> {
-            tripHistoryList.clear();
-            for (Trip trip : trips) {
-                trip.setRated(isTripRated(trip.getTripID())); // Kiểm tra trạng thái đánh giá
-                tripHistoryList.add(trip);
-            }
-            adapter.notifyDataSetChanged();
-        });
+        loadCompletedTrips();
 
         btnSearchNewTrip.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -96,12 +66,46 @@ public class HistoryListActivity extends AppCompatActivity {
         imageViewBack.setOnClickListener(v -> onBackPressed());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+    private void loadCompletedTrips() {
+        FirebaseFirestore.getInstance()
+                .collection("bookings")
+                .whereEqualTo("userID", currentUserId)
+                .whereEqualTo("status", "confirm") // ✅ Chỉ lấy các booking đã đặt (không lấy "cancel")
+                .get()
+                .addOnSuccessListener(bookingSnapshots -> {
+                    bookingList.clear();
+                    List<String> tripIDs = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : bookingSnapshots) {
+                        Booking b = doc.toObject(Booking.class);
+                        bookingList.add(b);
+                        tripIDs.add(b.getTripID());
+                    }
+
+                    if (!tripIDs.isEmpty()) {
+                        fetchCompletedTripsForBooking(tripIDs);
+                    } else {
+                        tripHistoryList.clear();
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    private void fetchCompletedTripsForBooking(List<String> tripIDs) {
+        FirebaseFirestore.getInstance()
+                .collection("trips")
+                .whereEqualTo("status", "completed") // ✅ Chỉ lấy các trip đã hoàn thành
+                .get()
+                .addOnSuccessListener(tripSnapshots -> {
+                    tripHistoryList.clear();
+                    for (QueryDocumentSnapshot doc : tripSnapshots) {
+                        Trip trip = doc.toObject(Trip.class);
+                        if (tripIDs.contains(trip.getTripID())) {
+                            tripHistoryList.add(trip);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                });
     }
 
     private void showRatingDialog(Trip trip, int position) {
@@ -128,25 +132,34 @@ public class HistoryListActivity extends AppCompatActivity {
             FeedBack feedback = new FeedBack();
             feedback.setFeedBackID("fb_" + System.currentTimeMillis());
             feedback.setTripID(trip.getTripID());
-            String driverID = trip.getTripID() + "_driver";
-            feedback.setDriverID(driverID); // Hoặc driverID nếu có
-            feedback.setUserID("user_demo");
+            feedback.setDriverID(trip.getDriverID());
+            feedback.setUserID(currentUserId);
             feedback.setContent(content);
             feedback.setRating(rating);
-            feedback.setTime(new Timestamp(new Date().getTime()));
+            feedback.setTime(Timestamp.now());
 
-            addFeedback(feedback);
-            trip.setRated(true);
-            saveRatedTrip(trip.getTripID());
-            adapter.notifyItemChanged(position);
+            // ✅ Bước 1: Lưu feedback vào Firestore
+            FirebaseFirestore.getInstance()
+                    .collection("feedbacks")
+                    .document(feedback.getFeedBackID())
+                    .set(feedback)
+                    .addOnSuccessListener(aVoid -> {
+                        // ✅ Bước 2: Update rated = true cho booking
+                        FirebaseFirestore.getInstance()
+                                .collection("bookings")
+                                .whereEqualTo("userID", currentUserId)
+                                .whereEqualTo("tripID", trip.getTripID())
+                                .get()
+                                .addOnSuccessListener(querySnapshot -> {
+                                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                                        doc.getReference().update("rated", true);
+                                    }
 
-            Toast.makeText(this, "Cảm ơn bạn đã đánh giá!", Toast.LENGTH_SHORT).show();
-            adapter.markTripAsRated(trip.getTripID());
-            Intent intent = new Intent(this, YourRatingActivity.class);
-            intent.putParcelableArrayListExtra("tripList", new ArrayList<>(tripHistoryList));
-            startActivityForResult(intent, RATING_REQUEST_CODE);
-
-            dialog.dismiss();
+                                    Toast.makeText(this, "Cảm ơn bạn đã đánh giá!", Toast.LENGTH_SHORT).show();
+                                    loadCompletedTrips(); // làm mới danh sách lịch sử
+                                    dialog.dismiss();
+                                });
+                    });
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -160,35 +173,5 @@ public class HistoryListActivity extends AppCompatActivity {
         if (selectedId == R.id.rb4) return 4;
         if (selectedId == R.id.rb5) return 5;
         return 0;
-    }
-
-    private void addFeedback(FeedBack feedback) {
-        feedbackList.add(feedback);
-        Set<FeedBack> set = new HashSet<>(feedbackList);
-        feedbackList.clear();
-        feedbackList.addAll(set);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RATING_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            List<Trip> updatedTripList = data.getParcelableArrayListExtra("tripList");
-            if (updatedTripList != null) {
-                tripHistoryList.clear();
-                tripHistoryList.addAll(updatedTripList);
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-    private void saveRatedTrip(String tripID) {
-        SharedPreferences prefs = getSharedPreferences(PREF_RATED_TRIPS, MODE_PRIVATE);
-        prefs.edit().putBoolean(tripID, true).apply();
-    }
-
-    private boolean isTripRated(String tripID) {
-        SharedPreferences prefs = getSharedPreferences(PREF_RATED_TRIPS, MODE_PRIVATE);
-        return prefs.getBoolean(tripID, false);
     }
 }

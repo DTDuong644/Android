@@ -79,7 +79,7 @@ public class Trip implements Parcelable {
     public void setRating(int rating) { this.rating = rating; }
     public void setUserCreated(boolean userCreated) { this.userCreated = userCreated; }
 
-    // Parcelable Implementation
+    // Parcelable implementation
     protected Trip(Parcel in) {
         tripID = in.readString();
         fromLocation = in.readString();
@@ -97,18 +97,6 @@ public class Trip implements Parcelable {
         rating = in.readInt();
         userCreated = in.readByte() != 0;
     }
-
-    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
-        @Override
-        public Trip createFromParcel(Parcel in) {
-            return new Trip(in);
-        }
-
-        @Override
-        public Trip[] newArray(int size) {
-            return new Trip[size];
-        }
-    };
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -133,4 +121,16 @@ public class Trip implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
+        @Override
+        public Trip createFromParcel(Parcel in) {
+            return new Trip(in);
+        }
+
+        @Override
+        public Trip[] newArray(int size) {
+            return new Trip[size];
+        }
+    };
 }

@@ -100,6 +100,12 @@ public class ListFragment extends Fragment {
 
         tripList.clear();
         for (Trip trip : trips) {
+            // Bỏ qua trip có status là cancel hoặc completed
+            String status = trip.getStatus() != null ? trip.getStatus().toLowerCase() : "";
+            if (status.equals("cancel") || status.equals("completed")) {
+                continue;
+            }
+
             for (Booking booking : bookingList) {
                 if (booking.getTripID().equals(trip.getTripID())) {
                     tripList.add(trip);
@@ -110,4 +116,5 @@ public class ListFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
     }
+
 }

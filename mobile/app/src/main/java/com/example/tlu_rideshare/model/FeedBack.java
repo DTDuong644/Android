@@ -1,7 +1,7 @@
 package com.example.tlu_rideshare.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
 
 public class FeedBack implements Serializable {
     private String feedBackID;

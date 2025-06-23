@@ -1,6 +1,5 @@
 package com.example.tlu_rideshare.passenger;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,16 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.FeedBack;
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class YourRatingActivity extends AppCompatActivity {
 
-    private TextView tvRatingScore;
     private RecyclerView recyclerView;
-    private ArrayList<FeedBack> feedbackList = new ArrayList<>();
-    private ArrayList<Trip> tripList = new ArrayList<>();
+    private TextView tvRatingScore;
     private YourRatingAdapter adapter;
+    private List<FeedBack> feedbackList = new ArrayList<>();
+    private List<Trip> tripList = new ArrayList<>();
+
+    private final String currentUserId = "user_demo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +39,11 @@ public class YourRatingActivity extends AppCompatActivity {
 
         tvRatingScore = findViewById(R.id.tvRatingScore);
         recyclerView = findViewById(R.id.recyclerView);
-        ImageView imgBackYourRating = findViewById(R.id.imgBackYourRating);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // ✅ Nhận dữ liệu từ Intent
-        tripList = getIntent().getParcelableArrayListExtra("tripList");
-        if (tripList == null) tripList = new ArrayList<>();
-
-        feedbackList = (ArrayList<FeedBack>) getIntent().getSerializableExtra("feedbackList");
-        if (feedbackList == null) feedbackList = new ArrayList<>();
-
-        adapter = new YourRatingAdapter(feedbackList, tripList);
-        recyclerView.setAdapter(adapter);
-
-        if (imgBackYourRating != null) {
-            imgBackYourRating.setOnClickListener(v -> onBackPressed());
+        ImageView imgBack = findViewById(R.id.imgBackYourRating);
+        if (imgBack != null) {
+            imgBack.setOnClickListener(v -> onBackPressed());
         }
 
         View mainView = findViewById(R.id.main);
@@ -60,24 +53,54 @@ public class YourRatingActivity extends AppCompatActivity {
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
-        } else {
-            Log.e("YourRatingActivity", "main View not found in layout");
         }
 
-        updateTotalFeedbackCount();
+        loadFeedbacks();
     }
 
-    private void updateTotalFeedbackCount() {
+    private void loadFeedbacks() {
+        FirebaseFirestore.getInstance()
+                .collection("feedbacks")
+                .whereEqualTo("userID", currentUserId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    feedbackList.clear();
+                    List<String> tripIDs = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        FeedBack fb = doc.toObject(FeedBack.class);
+                        feedbackList.add(fb);
+                        tripIDs.add(fb.getTripID());
+                    }
+
+                    loadTrips(tripIDs);
+                })
+                .addOnFailureListener(e -> Log.e("YourRating", "Load feedback failed", e));
+    }
+
+    private void loadTrips(List<String> tripIDs) {
+        if (tripIDs.isEmpty()) {
+            updateUI();
+            return;
+        }
+
+        FirebaseFirestore.getInstance()
+                .collection("trips")
+                .whereIn("tripID", tripIDs)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    tripList.clear();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        tripList.add(doc.toObject(Trip.class));
+                    }
+                    updateUI();
+                })
+                .addOnFailureListener(e -> Log.e("YourRating", "Load trips failed", e));
+    }
+
+    private void updateUI() {
+        adapter = new YourRatingAdapter(feedbackList, tripList);
+        recyclerView.setAdapter(adapter);
         tvRatingScore.setText(String.valueOf(feedbackList.size()));
-    }
-
-    // ✅ Gửi lại dữ liệu khi quay về
-    @Override
-    public void onBackPressed() {
-        Intent resultIntent = new Intent();
-        resultIntent.putParcelableArrayListExtra("tripList", tripList);
-        resultIntent.putExtra("feedbackList", feedbackList);
-        setResult(RESULT_OK, resultIntent);
-        super.onBackPressed();
     }
 }

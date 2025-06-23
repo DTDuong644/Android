@@ -150,7 +150,8 @@ public class SeeDetailsFragment extends Fragment {
                 booking.setTripID(finalTrip.getTripID());
                 booking.setUserID("user_demo");
                 booking.setBookingTime(Timestamp.now());
-                booking.setStatus("Đã đặt");
+                booking.setStatus("confirm");
+                booking.setSeatsBooked(passengers);
 
                 FirebaseFirestore.getInstance()
                         .collection("bookings")
@@ -161,7 +162,7 @@ public class SeeDetailsFragment extends Fragment {
                             FirebaseFirestore.getInstance()
                                     .collection("trips")
                                     .document(finalTrip.getTripID())
-                                    .set(finalTrip);
+                                    .update("seatsBooked", com.google.firebase.firestore.FieldValue.increment(passengers));
 
                             Toast.makeText(getContext(), "Đặt xe thành công cho " + passengers + " người!", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
