@@ -31,6 +31,7 @@ import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.FeedBack;
 import com.example.tlu_rideshare.model.User;
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AccountFragment extends Fragment {
 
@@ -174,7 +175,6 @@ public class AccountFragment extends Fragment {
         btnRepairResume = view.findViewById(R.id.btnRepairResume);
         btnHistoryList = view.findViewById(R.id.btnHistoryList);
         btnRate = view.findViewById(R.id.btnYourRate);
-        btnActivityAccount = view.findViewById(R.id.btnActivityAccount);
 
         txtFullName.setText(customer.getFullName());
         txtDescri.setText(customer.getDescrip());
@@ -201,30 +201,31 @@ public class AccountFragment extends Fragment {
         });
 
         btnRate.setOnClickListener(v -> {
-            SharedPreferences prefs = requireContext().getSharedPreferences("FeedbackPrefs", Context.MODE_PRIVATE);
-            String driverID = prefs.getString("latestFeedbackDriver", null);
-            int rating = prefs.getInt("latestFeedbackRating", -1);
-            String tripID = prefs.getString("latestFeedbackTrip", null);
-
-            if (driverID != null && tripID != null && rating != -1) {
-                Intent intent = new Intent(getActivity(), YourRatingActivity.class);
-                intent.putExtra("driverName", driverID);
-                intent.putExtra("rating", rating);
-                intent.putExtra("tripID", tripID);
-                startActivity(intent);
-            } else {
-                Toast.makeText(getContext(), "Chưa có đánh giá nào", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        btnActivityAccount.setOnClickListener(v -> {
             SharedPreferences prefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-            boolean isVerified = prefs.getBoolean("isAccountVerified", false);
-            Intent intent = isVerified
-                    ? new Intent(getActivity(), AccountStatusTrue.class)
-                    : new Intent(getActivity(), AccountStatusFalse.class);
-            startActivity(intent);
+            String userID = "user_demo";
+
+            if (userID == null) {
+                Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseFirestore.getInstance()
+                    .collection("bookings")
+                    .whereEqualTo("userID", userID)
+                    .whereEqualTo("rated", true)
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (!snapshot.isEmpty()) {
+                            Intent intent = new Intent(getActivity(), YourRatingActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getContext(), "Bạn chưa có chuyến đi nào đã được đánh giá", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Lỗi kết nối đến hệ thống", Toast.LENGTH_SHORT).show();
+                    });
         });
 
         return view;
