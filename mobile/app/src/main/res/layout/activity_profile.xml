@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".ProfileActivity">
+
+    <LinearLayout
+        android:id="@+id/profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="32dp">
+
+        <!-- Blue header -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="#1E88E5" />
+
+        <!-- Profile image -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="-60dp"
+            android:background="@drawable/circle_shape"
+            android:clipToOutline="true"
+            android:elevation="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_profile" />
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/user_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="PHẠM VŨ NGỌC TRỌNG"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Slogan -->
+        <TextView
+            android:id="@+id/user_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:text="BỐ CON PHONG CÁCH, IDOL ANH LÀ JACK"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp" />
+
+        <!-- Edit profile -->
+        <Button
+            android:id="@+id/edit_profile_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_button_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:text="Chỉnh sửa hồ sơ"
+            android:textColor="@android:color/white" />
+
+        <!-- Menu items -->
+        <LinearLayout
+            android:id="@+id/menu_items_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <!-- Lịch sử chuyến đi -->
+            <TextView
+                android:id="@+id/travel_history_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="Lịch sử chuyến đi"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="#EEEEEE" />
+
+            <!-- Đánh giá của bạn -->
+            <TextView
+                android:id="@+id/your_reviews_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="Đánh giá của bạn"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="#EEEEEE" />
+
+            <!-- Trạng thái tài khoản -->
+            <TextView
+                android:id="@+id/account_status_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="Trạng thái tài khoản"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Đăng xuất -->
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/rounded_button_background"
+            android:text="Đăng xuất"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</ScrollView>

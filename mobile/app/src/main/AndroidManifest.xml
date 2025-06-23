@@ -2,25 +2,95 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền Internet (đã có) -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Quyền lưu trữ (đã có, giới hạn maxSdkVersion=28) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <!-- Quyền đọc trạng thái điện thoại (có thể xóa nếu không dùng SMS) -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- Quyền nhận SMS (có thể xóa nếu không dùng OTP qua SMS) -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <!-- Quyền gửi SMS (có thể xóa nếu không dùng) -->
+    <uses-permission android:name="android.permission.SEND_SMS" android:maxSdkVersion="18" />
+
     <application
+        android:icon="@mipmap/ic_launcher"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TLU_RideShare"
+        android:theme="@style/Theme.TLURideShare"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="true" />
+        <activity
+            android:name=".OtpActivity"
+            android:exported="true" />
+        <activity
+            android:name=".VerifyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AccountStatusDoneActivity" />
+
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="tlurideshare.com" /> <!-- Thay bằng domain thực tế từ Firebase Console -->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PersonalInfoActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SendOTPActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AccountStatusActivity"
+            android:exported="true" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AverageRatingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".YourReviewsActivity"
+            android:exported="true" />
+
     </application>
 
 </manifest>

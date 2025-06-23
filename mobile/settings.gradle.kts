@@ -1,12 +1,6 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google() // Đảm bảo KHÔNG CÓ PHẦN content { ... } ở đây. Đây là thay đổi quan trọng.
         mavenCentral()
         gradlePluginPortal()
     }
@@ -19,6 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TLU_RideShare"
+rootProject.name = "TLURideShare"
 include(":app")
- 
