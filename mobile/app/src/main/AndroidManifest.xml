@@ -21,15 +21,6 @@
         android:theme="@style/Theme.TLU_RideShare"
         tools:targetApi="31">
         <activity
-            android:name=".passenger.SendOTP"
-            android:exported="false" />
-        <activity
-            android:name=".passenger.AccountStatusTrue"
-            android:exported="false" />
-        <activity
-            android:name=".passenger.AccountStatusFalse"
-            android:exported="false" />
-        <activity
             android:name=".passenger.YourRatingActivity"
             android:exported="false" />
         <activity

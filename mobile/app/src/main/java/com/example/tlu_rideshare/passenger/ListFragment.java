@@ -102,7 +102,7 @@ public class ListFragment extends Fragment {
         for (Trip trip : trips) {
             // Bỏ qua trip có status là cancel hoặc completed
             String status = trip.getStatus() != null ? trip.getStatus().toLowerCase() : "";
-            if (status.equals("cancel") || status.equals("completed")) {
+            if (status.equals("cancel") || status.equals("complete")) {
                 continue;
             }
 
