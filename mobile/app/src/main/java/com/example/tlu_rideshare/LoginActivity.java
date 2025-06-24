@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (user.isEmailVerified()) {
                                 updateEmailVerifiedInFirestore(user.getUid(), true);
                                 Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(this, ProfileActivity.class);
+                                Intent intent = new Intent(this, driver_home.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {

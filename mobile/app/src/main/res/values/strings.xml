@@ -28,7 +28,6 @@
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBdEfCy2WrSojh4TCP1qUImHuj7qllsmc0</string>
     <string name="google_storage_bucket" translatable="false">tlurideshare.firebasestorage.app</string>
     <string name="project_id" translatable="false">tlurideshare</string>
-    <string name="app_name">TLU Ride Share</string>
     <string name="title_login">Kết nối để chia sẻ những chuyến đi ý nghĩa</string>
     <string name="app_logo">TLU RIDESHARE</string> <string name="app_logo_description">Logo ứng dụng TLU Ride Share</string>
     <string name="register_slogan">Đăng ký tài khoản mới</string>

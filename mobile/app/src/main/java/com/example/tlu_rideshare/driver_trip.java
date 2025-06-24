@@ -2,6 +2,7 @@ package com.example.tlu_rideshare;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,9 @@ public class driver_trip extends AppCompatActivity {
         tripList = new ArrayList<>();
         tripAdapter = new TripAdapter(tripList);
         recyclerView.setAdapter(tripAdapter);
+        ImageButton imageButton = findViewById(R.id.imageButton);
+        imageButton.setOnClickListener(v -> finish());
+
 
         loadTrips(); // load data demo
     }

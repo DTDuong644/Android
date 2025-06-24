@@ -56,6 +56,9 @@ public class driver_add_trip extends AppCompatActivity {
         edtDestination = findViewById(R.id.edt_destination);
         edtPlate = findViewById(R.id.edt_plate);
         btnSave = findViewById(R.id.btn_save);
+        ImageView imgBack = findViewById(R.id.img_back);
+        imgBack.setOnClickListener(v -> finish());
+
 
         // Bắt sự kiện
         edt_date.setOnClickListener(v -> showDatePicker());

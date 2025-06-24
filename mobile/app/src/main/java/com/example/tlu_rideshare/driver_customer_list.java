@@ -3,6 +3,7 @@ package com.example.tlu_rideshare;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -60,6 +61,9 @@ public class driver_customer_list extends AppCompatActivity {
         userAdapter = new UserAdapter(this, userList, fromLocation, toLocation);
         recyclerCustomer.setLayoutManager(new LinearLayoutManager(this));
         recyclerCustomer.setAdapter(userAdapter);
+        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
+
 
         db = FirebaseFirestore.getInstance();
 
