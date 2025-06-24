@@ -1,57 +1,36 @@
 package com.example.tlu_rideshare.model;
 
 public class User {
-    private String customerId;
-    private String avatar;
+    private String id;                  // Firestore document ID
     private String fullName;
     private String email;
-    private String hometown;
     private String phoneNumber;
-    private String descrip;
-    private boolean isAccountVerified;
+    private String hometown;
+    private String dob;                // Date of birth (e.g., "04/06/2004")
+    private boolean emailVerified;
 
-    public User(String customerId, String avatar, String descrip, String email, String fullName,
-                String hometown, String phoneNumber, boolean isAccountVerified) {
-        this.customerId = customerId;
-        this.avatar = avatar;
-        this.descrip = descrip;
-        this.email = email;
+    // Bắt buộc: Constructor rỗng để Firebase mapping
+    public User() {}
+
+    public User(String id, String fullName, String email, String phoneNumber,
+                String hometown, String dob, boolean emailVerified) {
+        this.id = id;
         this.fullName = fullName;
-        this.hometown = hometown;
-        this.phoneNumber = phoneNumber;
-        this.isAccountVerified = isAccountVerified;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getDescrip() {
-        return descrip;
-    }
-
-    public void setDescrip(String descrip) {
-        this.descrip = descrip;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.hometown = hometown;
+        this.dob = dob;
+        this.emailVerified = emailVerified;
+    }
+
+    // Getters và Setters
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullName() {
@@ -62,12 +41,12 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getHometown() {
-        return hometown;
+    public String getEmail() {
+        return email;
     }
 
-    public void setHometown(String hometown) {
-        this.hometown = hometown;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {
@@ -78,11 +57,27 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isAccountVerified() {
-        return isAccountVerified;
+    public String getHometown() {
+        return hometown;
     }
 
-    public void setAccountVerified(boolean accountVerified) {
-        isAccountVerified = accountVerified;
+    public void setHometown(String hometown) {
+        this.hometown = hometown;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 }

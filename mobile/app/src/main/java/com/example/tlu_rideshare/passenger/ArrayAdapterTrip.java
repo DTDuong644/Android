@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.R;
 import com.example.tlu_rideshare.model.Trip;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -55,39 +56,26 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
         String vehicleType = trip.getVihicleType();
         if (vehicleType != null) vehicleType = vehicleType.trim();
 
-        // Nếu là xe máy thì set seatsAvailable = 1 nếu chưa có giá trị
         if ("Xe máy".equalsIgnoreCase(vehicleType) && trip.getSeatsAvailable() <= 0) {
             trip.setSeatsAvailable(1);
         }
 
-        // Tính số chỗ trống
         int emptySeats = Math.max(trip.getSeatsAvailable() - trip.getSeatsBooked(), 0);
 
-        // Ẩn item nếu không còn chỗ
         if (emptySeats == 0) {
-            // Nếu không còn chỗ thì ẩn view (bằng cách set height = 0 và visibility GONE)
             holder.itemView.setVisibility(View.GONE);
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
             params.height = 0;
             holder.itemView.setLayoutParams(params);
             return;
         } else {
-            // Nếu có chỗ thì đảm bảo view hiển thị bình thường
             holder.itemView.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.itemView.setLayoutParams(params);
         }
 
-        // Gán dữ liệu hiển thị
         holder.tvTripTitle.setText("🚌 Chuyến đi " + (position + 1));
-
-        String driverID = trip.getDriverID();
-        String driverTempName = "Tài xế " + (driverID != null && driverID.length() >= 6
-                ? driverID.substring(0, 6)
-                : (driverID != null ? driverID : "Chưa rõ"));
-        holder.tvDriver.setText(driverTempName);
-
         holder.tvTime.setText("Thời gian khởi hành: " + trip.getDate() + " " + trip.getTime());
         holder.tvPrice.setText("Giá: " + trip.getPrice() + " VNĐ");
 
@@ -95,6 +83,30 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
             holder.tvVehicle.setText("Phương tiện: Ô tô (còn " + emptySeats + " chỗ)");
         } else {
             holder.tvVehicle.setText("Phương tiện: " + (vehicleType != null ? vehicleType : "Không rõ"));
+        }
+
+        // 🔽 Load tên tài xế từ Firestore
+        String driverID = trip.getDriverID();
+        holder.tvDriver.setText("Tài xế: đang tải...");
+
+        if (driverID != null && !driverID.isEmpty()) {
+            FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(driverID)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String fullName = documentSnapshot.getString("fullName");
+                            holder.tvDriver.setText("Tài xế: " + (fullName != null ? fullName : "Không rõ"));
+                        } else {
+                            holder.tvDriver.setText("Tài xế: Không tìm thấy");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        holder.tvDriver.setText("Tài xế: Lỗi tải");
+                    });
+        } else {
+            holder.tvDriver.setText("Tài xế: Không rõ");
         }
 
         holder.btnDetails.setOnClickListener(v -> {

@@ -28,6 +28,7 @@ public class driver_home extends AppCompatActivity {
     private TripAdapter tripAdapter;
     private List<Trip> tripList;
     private FirebaseFirestore db;
+    Button btnToiCanDiXe; // Khai báo thêm nút
 
     private Button btnChuyenDi, btnThemChuyenDi;
     @Override
@@ -48,12 +49,22 @@ public class driver_home extends AppCompatActivity {
         recyclerViewTrips.setAdapter(tripAdapter);
         btnChuyenDi = findViewById(R.id.btnChuyenDi);
         btnThemChuyenDi = findViewById(R.id.btnThemChuyenDi);
+        btnToiCanDiXe = findViewById(R.id.btnToiCanDiXe);
 
         btnThemChuyenDi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 startActivity(new Intent(driver_home.this, driver_add_trip.class));
+            }
+        });
+
+        btnToiCanDiXe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(driver_home.this, MainActivity.class);
+                intent.putExtra("selected_tab", 0); // 0 là HomeFragment
+                startActivity(intent);
             }
         });
 

@@ -1,5 +1,6 @@
 package com.example.tlu_rideshare.passenger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tlu_rideshare.MainActivity;
 import com.example.tlu_rideshare.R;
+import com.example.tlu_rideshare.driver_home;
 import com.example.tlu_rideshare.model.Booking;
 import com.example.tlu_rideshare.model.Trip;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,6 +50,12 @@ public class HomeFragment extends Fragment {
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).switchToTab(1);
             }
+        });
+
+        Button btnDriver = view.findViewById(R.id.btn_driver);
+        btnDriver.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), driver_home.class);
+            startActivity(intent);
         });
 
         loadTrips();

@@ -193,19 +193,23 @@ public class driver_add_trip extends AppCompatActivity {
     private void saveTripToFirestore(String from, String to, String date, String time,
                                      String vehicleType, String licensePlate, int seats, int price) {
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "Bạn chưa đăng nhập!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String driverID = auth.getCurrentUser().getUid();
         String tripID = db.collection("trips").document().getId();
-        String driverID = "driver123"; // gán tạm driverID vì chưa có Firebase Auth
-        driverID = "tnsUMBoQvzYFqPerD5dSURqcl543";
-        //driverID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         Trip trip = new Trip(tripID, from, to, driverID, date, time,
                 seats, 0, licensePlate, vehicleType, price, "confirm");
 
         db.collection("trips").document(tripID).set(trip)
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Tạo chuyến đi thành công!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(driver_add_trip.this, driver_trip.class);
-                    startActivity(intent);
-                    finish(); // Quay lại màn hình trước
+                    startActivity(new Intent(driver_add_trip.this, driver_trip.class));
+                    finish();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Lỗi khi lưu: " + e.getMessage(), Toast.LENGTH_LONG).show());

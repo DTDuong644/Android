@@ -58,15 +58,6 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/txtDescri"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="Món ăn yêu thích của thành là cứt"
-        android:textAlignment="center"
-        android:textSize="16sp" />
-
     <Button
         android:id="@+id/btnRepairResume"
         android:layout_width="wrap_content"

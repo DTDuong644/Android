@@ -1,6 +1,7 @@
 package com.example.tlu_rideshare;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -84,11 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             if (user.isEmailVerified()) {
-                                updateEmailVerifiedInFirestore(user.getUid(), true);
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(this, driver_home.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
+                                fetchUserRoleAndNavigate(user.getUid());
                             } else {
                                 user.sendEmailVerification().addOnCompleteListener(verifyTask -> {
                                     if (verifyTask.isSuccessful()) {
@@ -103,6 +101,34 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e(TAG, "Đăng nhập thất bại: " + task.getException().getMessage());
                         Toast.makeText(this, "Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.", Toast.LENGTH_LONG).show();
                     }
+                });
+    }
+
+    private void fetchUserRoleAndNavigate(String uid) {
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String role = documentSnapshot.getString("role");
+                        updateEmailVerifiedInFirestore(uid, true);
+
+                        // Lưu user ID vào SharedPreferences
+                        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                        prefs.edit().putString("customerId", uid).apply();
+
+                        Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent;
+
+                        intent = new Intent(this, MainActivity.class);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi khi lấy dữ liệu người dùng", Toast.LENGTH_SHORT).show();
                 });
     }
 

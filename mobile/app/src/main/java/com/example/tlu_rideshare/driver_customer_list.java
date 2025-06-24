@@ -75,7 +75,7 @@ public class driver_customer_list extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("bookings")
-                .whereEqualTo("tripId", tripId)
+                .whereEqualTo("tripID", tripId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -114,6 +114,7 @@ public class driver_customer_list extends AppCompatActivity {
                         Toast.makeText(driver_customer_list.this, "Lỗi khi lấy booking: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
 
