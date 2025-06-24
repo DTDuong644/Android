@@ -1,0 +1,6 @@
+*
+!private/
+!public/
+!.gitignore
+C:\Laravel\quanlynguoidung\storage\app
+
