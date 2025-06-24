@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="darker_gray">#A9A9A9</color> <!-- Hoặc màu xám bạn muốn -->
 
+    <color name="colorPrimary">#0080FF</color>
+    <color name="primaryDark">#00264D</color> <!-- Màu đậm hơn cho các phần tối -->
+    <color name="grey">#757575</color> <!-- Màu xám cho hint text -->
 </resources>

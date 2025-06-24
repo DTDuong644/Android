@@ -1,9 +1,7 @@
-
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
 }
-
 
 android {
     namespace = "com.example.tlu_rideshare"
@@ -28,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -35,16 +34,20 @@ android {
 }
 
 dependencies {
-
+    // Các thư viện Android cơ bản từ driver-feature (dùng alias nếu đang dùng version catalog)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("com.google.firebase:firebase-firestore:24.11.0")
-    implementation ("com.google.firebase:firebase-auth:22.3.1")
 
+    // Firebase platform BOM để đồng bộ version
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 }
