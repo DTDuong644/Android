@@ -52,13 +52,34 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
     public void onBindViewHolder(TripViewHolder holder, int position) {
         Trip trip = tripList.get(position);
 
-        // Debug log
-        android.util.Log.d("AdapterTrip", "Trip " + position + ": " + trip.getFromLocation() + " -> " + trip.getToLocation() + " | " + trip.getDate() + " " + trip.getTime());
-        android.util.Log.d("TripAdapter", "tripID: " + trip.getTripID());
-        android.util.Log.d("TripAdapter", "vihicleType = " + trip.getVihicleType());
-        android.util.Log.d("TripAdapter", "seatsAvailable = " + trip.getSeatsAvailable());
-        android.util.Log.d("TripAdapter", "seatsBooked = " + trip.getSeatsBooked());
+        String vehicleType = trip.getVihicleType();
+        if (vehicleType != null) vehicleType = vehicleType.trim();
 
+        // Nếu là xe máy thì set seatsAvailable = 1 nếu chưa có giá trị
+        if ("Xe máy".equalsIgnoreCase(vehicleType) && trip.getSeatsAvailable() <= 0) {
+            trip.setSeatsAvailable(1);
+        }
+
+        // Tính số chỗ trống
+        int emptySeats = Math.max(trip.getSeatsAvailable() - trip.getSeatsBooked(), 0);
+
+        // Ẩn item nếu không còn chỗ
+        if (emptySeats == 0) {
+            // Nếu không còn chỗ thì ẩn view (bằng cách set height = 0 và visibility GONE)
+            holder.itemView.setVisibility(View.GONE);
+            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+            params.height = 0;
+            holder.itemView.setLayoutParams(params);
+            return;
+        } else {
+            // Nếu có chỗ thì đảm bảo view hiển thị bình thường
+            holder.itemView.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.itemView.setLayoutParams(params);
+        }
+
+        // Gán dữ liệu hiển thị
         holder.tvTripTitle.setText("🚌 Chuyến đi " + (position + 1));
 
         String driverID = trip.getDriverID();
@@ -70,11 +91,7 @@ public class ArrayAdapterTrip extends RecyclerView.Adapter<ArrayAdapterTrip.Trip
         holder.tvTime.setText("Thời gian khởi hành: " + trip.getDate() + " " + trip.getTime());
         holder.tvPrice.setText("Giá: " + trip.getPrice() + " VNĐ");
 
-        String vehicleType = trip.getVihicleType();
-        if (vehicleType != null) vehicleType = vehicleType.trim();
-
         if (vehicleType != null && vehicleType.startsWith("Ô tô")) {
-            int emptySeats = Math.max(trip.getSeatsAvailable() - trip.getSeatsBooked(), 0);
             holder.tvVehicle.setText("Phương tiện: Ô tô (còn " + emptySeats + " chỗ)");
         } else {
             holder.tvVehicle.setText("Phương tiện: " + (vehicleType != null ? vehicleType : "Không rõ"));
