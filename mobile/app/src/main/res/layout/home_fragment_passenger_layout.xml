@@ -30,7 +30,7 @@
             android:id="@+id/btn_driver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_button"
+            android:background="@drawable/custom_button_passenger"
             android:text="Tôi muốn lái xe"
             app:backgroundTint="@null" />
 
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="6dp"
-        android:background="@drawable/custom_button"
+        android:background="@drawable/custom_button_passenger"
         android:text="Tìm kiếm chuyến đi mới"
         android:textColor="#FFFFFF"
         app:backgroundTint="@null" />

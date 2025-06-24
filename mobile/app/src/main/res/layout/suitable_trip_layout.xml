@@ -28,7 +28,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginLeft="10dp"
-                app:srcCompat="@drawable/icon_back"
+                app:srcCompat="@drawable/icon_back_passenger"
                 app:tint="#FFFFFF" />
 
             <TextView
