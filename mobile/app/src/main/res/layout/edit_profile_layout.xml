@@ -29,7 +29,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginLeft="10dp"
-                app:srcCompat="@drawable/icon_back"
+                app:srcCompat="@drawable/icon_back_passenger"
                 app:tint="@color/white" />
 
             <TextView
@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/custom_edittext_passenger"
+            android:background="@drawable/custom_edit_passenger"
             android:ems="10"
             android:inputType="text"
             app:backgroundTint="@null"
@@ -111,7 +111,7 @@
             android:id="@+id/editTextText2"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edittext_passenger"
+            android:background="@drawable/custom_edit_passenger"
             android:ems="10"
             android:inputType="text"
             app:backgroundTint="@null"
@@ -131,7 +131,7 @@
             android:id="@+id/editTextText3"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edittext_passenger"
+            android:background="@drawable/custom_edit_passenger"
             app:backgroundTint="@null"
             android:ems="10"
             android:inputType="text"
@@ -151,7 +151,7 @@
             android:id="@+id/editTextText4"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edittext_passenger"
+            android:background="@drawable/custom_edit_passenger"
             app:backgroundTint="@null"
             android:ems="10"
             android:inputType="text"
@@ -171,7 +171,7 @@
             android:id="@+id/editTextText5"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edittext_passenger"
+            android:background="@drawable/custom_edit_passenger"
             app:backgroundTint="@null"
             android:ems="10"
             android:inputType="text"
@@ -185,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Lưu thay đổi"
-        android:background="@drawable/custom_button"
+        android:background="@drawable/custom_button_passenger"
         app:backgroundTint="@null"/>
 
 </LinearLayout>

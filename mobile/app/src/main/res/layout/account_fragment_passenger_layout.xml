@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/custom_button"
+        android:background="@drawable/custom_button_passenger"
         android:text="Chỉnh sửa hồ sơ"
         app:backgroundTint="@null" />
 
@@ -84,7 +84,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/custom_edittext_passenger"
+        android:background="@drawable/custom_edit_passenger"
         android:text="Lịch sử chuyến đi"
         android:textAlignment="viewStart"
         android:textColor="#000000"
@@ -97,7 +97,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/custom_edittext_passenger"
+        android:background="@drawable/custom_edit_passenger"
         android:text="Đánh giá của bạn"
         android:textAlignment="viewStart"
         android:textColor="#000000"
@@ -108,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/custom_button"
+        android:background="@drawable/custom_button_passenger"
         android:text="Đăng xuất"
         app:backgroundTint="@null" />
 </LinearLayout>

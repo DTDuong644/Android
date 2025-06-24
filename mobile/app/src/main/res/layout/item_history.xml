@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/custom_button"
+                android:background="@drawable/custom_button_passenger"
                 android:text="Đánh giá"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="@null" />
