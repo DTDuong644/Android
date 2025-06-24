@@ -169,7 +169,7 @@ public class SeeDetailsFragment extends Fragment {
                             // Sau khi cập nhật Trip xong
                             tripViewModel.updateTrip(finalTrip);
 
-// Gọi lại filterTrips trong ListFragment nếu đang hiện ListFragment
+                            // Gọi lại filterTrips trong ListFragment nếu đang hiện ListFragment
                             Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.tabContent);
                             if (currentFragment instanceof ListFragment) {
                                 ((ListFragment) currentFragment).reloadBookings(); // <- bạn cần tạo hàm này
