@@ -53,7 +53,11 @@ public class driver_customer_list extends AppCompatActivity {
         edtSearch = findViewById(R.id.edtSearch);  // nếu có EditText tìm kiếm trong layout
 
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, userList);
+        String tripID = getIntent().getStringExtra("tripID");
+        String fromLocation = getIntent().getStringExtra("fromLocation");
+        String toLocation = getIntent().getStringExtra("toLocation");
+
+        userAdapter = new UserAdapter(this, userList, fromLocation, toLocation);
         recyclerCustomer.setLayoutManager(new LinearLayoutManager(this));
         recyclerCustomer.setAdapter(userAdapter);
 

@@ -18,9 +18,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private Context context;
     private List<User> userList;
 
-    public UserAdapter(Context context, List<User> userList) {
+    private String fromLocation;
+
+    private String toLocation;
+
+    public UserAdapter(Context context, List<User> userList, String fromLocation, String toLocation) {
         this.context = context;
         this.userList = userList;
+        this.fromLocation = fromLocation;
+        this.toLocation = toLocation;
     }
 
     @NonNull
@@ -33,10 +39,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
-        holder.tvName.setText("Tên: " + user.getName());
-        holder.tvPickup.setText("Đón: " + user.getPickup());
-        holder.tvDropoff.setText("Trả: " + user.getDropoff());
-        holder.tvPhone.setText("Sđt: " + user.getPhone());
+        holder.tvName.setText("Tên: " + user.getFullName());
+        holder.tvPickup.setText("Đón: " + fromLocation);
+        holder.tvDropoff.setText("Trả: " + toLocation);
+        holder.tvPhone.setText("Sđt: " + user.getPhoneNumber());
         holder.tvEmail.setText("Email: " + user.getEmail());
 
         // Xử lý nút xóa (nếu muốn)

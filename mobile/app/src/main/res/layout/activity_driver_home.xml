@@ -124,14 +124,15 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:tint="#007BFF" /> <!-- Màu xanh dương -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trang chủ"
                 android:textSize="12sp"
-                android:textColor="#000000" />
+                android:textColor="#007BFF" /> <!-- Màu xanh dương -->
         </LinearLayout>
 
         <!-- Chuyến đi -->

@@ -146,11 +146,14 @@ public class driver_detail_trip extends AppCompatActivity {
             if (trip != null && trip.getTripID() != null) {
                 Intent intent = new Intent(driver_detail_trip.this, driver_customer_list.class);
                 intent.putExtra("tripID", trip.getTripID());
+                intent.putExtra("fromLocation", trip.getFromLocation());
+                intent.putExtra("toLocation", trip.getToLocation());
                 startActivity(intent);
             } else {
                 Toast.makeText(driver_detail_trip.this, "Không tìm thấy mã chuyến đi", Toast.LENGTH_SHORT).show();
             }
         });
+
 
     }
 }
