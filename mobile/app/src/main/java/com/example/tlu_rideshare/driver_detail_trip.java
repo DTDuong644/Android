@@ -18,6 +18,8 @@ public class driver_detail_trip extends AppCompatActivity {
     private ImageButton imageButtonBack;
     private Button btnHuyChuyen;
 
+    private Button btnKhachHang;
+
     Button btnSuaThongTin;
 
     private FirebaseFirestore db;
@@ -46,6 +48,7 @@ public class driver_detail_trip extends AppCompatActivity {
         btnHuyChuyen = findViewById(R.id.btnHuyChuyen);
         btnSuaThongTin = findViewById(R.id.btnSuaThongTin);
         btnHoanThanh = findViewById(R.id.btnHoanThanh);
+        btnKhachHang = findViewById(R.id.btnKhachHang);
         // Nhận dữ liệu chuyến đi
         trip = (Trip) getIntent().getSerializableExtra("trip");
 
@@ -138,6 +141,15 @@ public class driver_detail_trip extends AppCompatActivity {
                     })
                     .setNegativeButton("Hủy", null)
                     .show();
+        });
+        btnKhachHang.setOnClickListener(v -> {
+            if (trip != null && trip.getTripID() != null) {
+                Intent intent = new Intent(driver_detail_trip.this, driver_customer_list.class);
+                intent.putExtra("tripID", trip.getTripID());
+                startActivity(intent);
+            } else {
+                Toast.makeText(driver_detail_trip.this, "Không tìm thấy mã chuyến đi", Toast.LENGTH_SHORT).show();
+            }
         });
 
     }

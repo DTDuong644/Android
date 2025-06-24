@@ -1,6 +1,7 @@
 package com.example.tlu_rideshare;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +24,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class driver_customer_list extends AppCompatActivity {
 
@@ -56,62 +59,54 @@ public class driver_customer_list extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        loadCustomerList();
+        String tripId = getIntent().getStringExtra("tripID");
+        loadCustomerList(tripId);
     }
 
-    private void loadCustomerList() {
-//        CollectionReference usersRef = db.collection("users");
-//
-//        usersRef.whereEqualTo("role", "customer").get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        userList.clear();
-//                        if (task.isSuccessful()) {
-//                            for (QueryDocumentSnapshot doc : task.getResult()) {
-//                                User user = doc.toObject(User.class);
-//                                userList.add(user);
-//                            }
-//                            userAdapter.notifyDataSetChanged();
-//                        } else {
-//                            Toast.makeText(driver_customer_list.this,
-//                                    "Lỗi tải dữ liệu: " + task.getException().getMessage(),
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-        userList.clear();
+    private void loadCustomerList(String tripId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        userList.add(new User(
-                "uid001",
-                "Nguyễn Văn A",
-                "a@gmail.com",
-                "0123456789",
-                "Nhà A2, Đại học Thủy Lợi",
-                "Nhà xxx, đường yy, xã z, huyện k, tỉnh hhh",
-                "customer"
-        ));
+        db.collection("bookings")
+                .whereEqualTo("tripId", tripId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Set<String> userIdSet = new HashSet<>();
 
-        userList.add(new User(
-                "uid002",
-                "Nguyễn Văn B",
-                "b@gmail.com",
-                "0987654321",
-                "Nhà A2, Đại học Thủy Lợi",
-                "Số 5, đường abc, tỉnh xyz",
-                "customer"
-        ));
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            String userId = doc.getString("userId");
+                            if (userId != null) {
+                                userIdSet.add(userId);
+                            }
+                        }
 
-        userList.add(new User(
-                "uid003",
-                "Nguyễn Văn C",
-                "c@gmail.com",
-                "0911222333",
-                "Nhà A2, Đại học Thủy Lợi",
-                "Thị trấn abc, huyện def",
-                "customer"
-        ));
+                        if (userIdSet.isEmpty()) {
+                            Toast.makeText(driver_customer_list.this, "Chuyến đi này chưa có khách nào đặt.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-        userAdapter.notifyDataSetChanged();
+                        userList.clear();
+
+                        for (String userId : userIdSet) {
+                            db.collection("users").document(userId)
+                                    .get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        if (documentSnapshot.exists()) {
+                                            User user = documentSnapshot.toObject(User.class);
+                                            userList.add(user);
+                                            userAdapter.notifyDataSetChanged();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Lỗi khi lấy user: " + e.getMessage());
+                                    });
+                        }
+
+                    } else {
+                        Toast.makeText(driver_customer_list.this, "Lỗi khi lấy booking: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
+
 }
