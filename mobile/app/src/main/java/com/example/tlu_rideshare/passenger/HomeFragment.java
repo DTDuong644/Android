@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
                     Set<String> completedTripIDs = new HashSet<>();
                     for (var doc : bookingSnapshots) {
                         Booking booking = doc.toObject(Booking.class);
-                        if ("completed".equalsIgnoreCase(booking.getStatus())) {
+                        if ("complete".equalsIgnoreCase(booking.getStatus())) {
                             completedTripIDs.add(booking.getTripID());
                         }
                     }
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
 
                                     boolean isToday = trip.getDate().equals(today);
                                     boolean isCanceledOrCompleted = trip.getStatus().equalsIgnoreCase("cancel") ||
-                                            trip.getStatus().equalsIgnoreCase("completed");
+                                            trip.getStatus().equalsIgnoreCase("complete");
                                     boolean isAlreadyCompletedByUser = completedTripIDs.contains(trip.getTripID());
 
                                     if (isToday && !isCanceledOrCompleted && !isAlreadyCompletedByUser) {

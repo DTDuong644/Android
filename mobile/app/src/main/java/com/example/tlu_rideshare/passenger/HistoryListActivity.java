@@ -94,7 +94,7 @@ public class HistoryListActivity extends AppCompatActivity {
     private void fetchCompletedTripsForBooking(List<String> tripIDs) {
         FirebaseFirestore.getInstance()
                 .collection("trips")
-                .whereEqualTo("status", "completed") // ✅ Chỉ lấy các trip đã hoàn thành
+                .whereEqualTo("status", "complete") // ✅ Chỉ lấy các trip đã hoàn thành
                 .get()
                 .addOnSuccessListener(tripSnapshots -> {
                     tripHistoryList.clear();

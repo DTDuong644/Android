@@ -24,7 +24,9 @@
         tools:targetApi="31">
 
         <!-- Màn hình chính -->
-        <activity android:name=".passenger.HomeActivity" android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -48,9 +50,9 @@
         <activity android:name=".passenger.AccountStatusTrue" android:exported="false" />
         <activity android:name=".passenger.SendOTP" android:exported="false" />
         <activity android:name=".passenger.HistoryListActivity" android:exported="false" />
+        <activity android:name=".passenger.HomeActivity" android:exported="false" />
 
         <!-- Chung -->
-        <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".RegisterActivity" android:exported="false" />
         <activity android:name=".EditProfileActivity" android:exported="false" />
